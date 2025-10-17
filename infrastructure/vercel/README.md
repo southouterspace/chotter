@@ -2,6 +2,21 @@
 
 This directory contains configuration and documentation for deploying Chotter web applications to Vercel.
 
+## Quick Start
+
+If you're setting up Vercel for the first time or redeploying after a failure, follow these steps:
+
+1. Go to [vercel.com](https://vercel.com) and log in with GitHub
+2. Click "Add New Project" and select the Chotter repository
+3. **CRITICAL:** Set "Root Directory" to `apps/web-admin` (NOT the repository root)
+4. After project creation, add Environment Variables:
+   - `VITE_SUPABASE_URL` = Your Supabase URL
+   - `VITE_SUPABASE_ANON_KEY` = Your Supabase anonymous key
+5. Click "Redeploy" to rebuild with environment variables
+6. Repeat steps 2-5 for `apps/web-customer` project
+
+**Common Error:** If you see "No Next.js version detected", your Root Directory is wrong. See [Troubleshooting](#troubleshooting).
+
 ## Overview
 
 Chotter deploys two React web applications to Vercel:
@@ -47,6 +62,12 @@ Both applications require the following environment variables for Supabase integ
 - Use Supabase's anonymous (public) key, not the service role key
 - Store sensitive values in Vercel project settings, not in version control
 
+## Critical Configuration: Root Directory
+
+IMPORTANT: The most common deployment failure is incorrect Root Directory configuration. Vercel will not automatically detect the correct directory in a monorepo. You MUST explicitly set this in the Vercel dashboard during project creation.
+
+If you see the error: `No Next.js version detected. Make sure your package.json has "next" in either "dependencies" or "devDependencies"`, this is because Vercel is building from the repository root instead of the app directory.
+
 ## Deployment Steps
 
 ### Prerequisites
@@ -73,37 +94,65 @@ Both applications require the following environment variables for Supabase integ
 
 #### 3. Create Admin Dashboard Project
 
-1. Click "Import Project" or "Add New" > "Project"
-2. Select the Chotter repository
-3. Configure as follows:
-   - **Project Name:** `chotter-admin`
-   - **Framework Preset:** Vite
-   - **Root Directory:** `apps/web-admin`
-   - **Build Command:** Leave empty (will use vercel.json)
-   - **Output Directory:** `dist`
+**STEP 1: Import Project**
 
-4. Click "Deploy" to proceed to environment variable configuration
+1. Click "Import Project" or "Add New" > "Project"
+2. Select the Chotter repository from the list
+
+**STEP 2: Configure Project Settings** (THIS IS CRITICAL)
+
+Before clicking "Deploy", you must configure these settings:
+
+1. **Project Name:** `chotter-admin`
+2. **Root Directory:** `apps/web-admin` (CRITICAL - this is NOT optional)
+3. **Framework Preset:** Vite (should auto-detect after setting root directory)
+4. **Build Command:** Leave empty (will use vercel.json in the app directory)
+5. **Output Directory:** Leave empty or set to `dist` (will use vercel.json setting)
+
+**Important Notes:**
+- The "Root Directory" field is required for monorepo deployments
+- After you set "Root Directory" to `apps/web-admin`, Vercel should automatically detect that it's a Vite project
+- The "Framework Preset" might change to auto-detect or show as "Other" until you set the root directory
+- Build and Output directories should use values from the app's vercel.json
+
+**STEP 3: Deploy**
+
+1. Click "Deploy" to create the project
+2. Wait for the initial build to complete
+3. Proceed to environment variable configuration (see next step)
 
 #### 4. Configure Admin Dashboard Environment Variables
 
-In the Vercel project settings page or after deployment:
+After the project is created and the first build completes:
 
-1. Go to "Settings" > "Environment Variables"
-2. Add the following variables (available in Supabase dashboard):
+1. Go to your project's "Settings" tab
+2. Navigate to "Environment Variables" in the sidebar
+3. Add the following variables (get values from Supabase dashboard):
 
-   - `VITE_SUPABASE_URL` = Your Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` = Your Supabase anonymous API key
+   - Name: `VITE_SUPABASE_URL`
+     Value: Your Supabase project URL (e.g., `https://xxxxxxxxxxxx.supabase.co`)
 
-3. Select environments: Production, Preview, Development
-4. Click "Save"
+   - Name: `VITE_SUPABASE_ANON_KEY`
+     Value: Your Supabase anonymous API key
+
+4. For both variables:
+   - Select all three environments: `Production`, `Preview`, `Development`
+   - Click "Save"
+
+5. **Important:** After adding/updating environment variables, you must **re-deploy** the project for changes to take effect:
+   - Go to the "Deployments" tab
+   - Find the most recent deployment
+   - Click the three-dot menu and select "Redeploy"
+   - Or simply push a new commit to trigger a redeploy
 
 #### 5. Create Customer Portal Project
 
 Repeat steps 3-4 with these modifications:
 
 - **Project Name:** `chotter-customer`
-- **Root Directory:** `apps/web-customer`
-- Same environment variables as Admin Dashboard
+- **Root Directory:** `apps/web-customer` (CRITICAL - use this path, not web-admin)
+- All other settings remain the same
+- Use the same environment variables as Admin Dashboard
 
 ### Continuous Deployment
 
@@ -131,7 +180,26 @@ vercel --prod
 
 ## Vercel Configuration Files
 
+Chotter uses three levels of Vercel configuration:
+
+1. **App-level:** Each app has its own `vercel.json` with build settings
+2. **Root-level:** Global configuration applies to all projects
+3. **Dashboard:** Project-specific settings in Vercel dashboard (especially Root Directory)
+
+### How Vercel Finds Configuration
+
+When Vercel builds your project:
+
+1. It uses the "Root Directory" from the Vercel dashboard to determine where to start
+2. It looks for `vercel.json` in that directory
+3. It uses settings from `vercel.json`, or defaults if not present
+4. Environment Variables are always configured in the Vercel dashboard
+
+**CRITICAL:** The Root Directory setting in the Vercel dashboard MUST match the location of your `package.json` and `vercel.json` files. If set to the repository root instead of `apps/web-admin`, Vercel will not find the correct package.json and will fail.
+
 ### `/apps/web-admin/vercel.json`
+
+Defines build configuration for the admin dashboard:
 
 ```json
 {
@@ -146,9 +214,19 @@ vercel --prod
   }
 }
 ```
+
+**Settings Explanation:**
+- `buildCommand`: Runs TypeScript check + Vite build
+- `outputDirectory`: Contains compiled static assets ready to deploy
+- `framework`: Tells Vercel this is a Vite app (enables optimizations)
+- `installCommand`: Uses Bun instead of npm
+- `devCommand`: Used for local development preview
+- `env`: Maps environment variable names (not values - values come from dashboard)
 
 ### `/apps/web-customer/vercel.json`
 
+Identical to admin dashboard configuration:
+
 ```json
 {
   "buildCommand": "bun run build",
@@ -163,17 +241,22 @@ vercel --prod
 }
 ```
 
-### `/infrastructure/vercel/vercel.json` (Global Overrides)
+### `/infrastructure/vercel/vercel.json` (Root-Level Configuration)
+
+Provides minimal global settings (this is for reference only - each project uses its own app-level config):
 
 ```json
 {
   "github": {
     "silent": true
-  },
-  "buildCommand": "bun run build",
-  "installCommand": "bun install"
+  }
 }
 ```
+
+**Settings Explanation:**
+- `"silent": true`: Prevents Vercel from posting detailed status comments on every GitHub commit
+
+**Note:** The root `vercel.json` is not used when Root Directory is set to an app directory. Each project uses its app-level `vercel.json` instead.
 
 ## Branch Strategy
 
@@ -213,36 +296,71 @@ Format: `https://chotter-[project]-[git-hash].vercel.app`
 
 ## Troubleshooting
 
+### "No Next.js version detected" - Build Error
+
+**Issue:** Deployment fails with:
+```
+Error: No Next.js version detected. Make sure your package.json has "next" in either "dependencies" or "devDependencies". Also check your Root Directory setting matches the directory of your package.json file.
+```
+
+**Root Cause:** Vercel is attempting to build from the repository root instead of the app directory. This is the most common deployment failure for monorepo projects.
+
+**Solution:**
+1. Go to your Vercel project "Settings" tab
+2. Find the "Root Directory" setting
+3. Change it to either:
+   - `apps/web-admin` (for admin project), OR
+   - `apps/web-customer` (for customer project)
+4. Save settings
+5. Go to "Deployments" and click "Redeploy" on the latest deployment
+6. Monitor build logs to verify it now builds from the correct directory
+
+**Verification:** After fixing Root Directory, the build logs should show:
+```
+Building in: /app/apps/web-admin  # or web-customer
+Found vercel.json. Using build settings from there.
+```
+
 ### Build Fails with "bun: command not found"
 
 **Issue:** Vercel build system doesn't have Bun installed
 
 **Solution:** This should not occur as Vercel supports Bun. If it does:
-1. Check Vercel project settings
-2. Ensure `buildCommand` is set correctly in vercel.json
-3. Contact Vercel support
+1. Verify the app directory has a valid `package.json` with the correct build command
+2. Check Vercel project settings for the Root Directory (see above solution)
+3. Ensure `vercel.json` has `"installCommand": "bun install"`
+4. Contact Vercel support if issue persists
 
 ### Environment Variables Not Available
 
-**Issue:** Application shows undefined Supabase URL/key
+**Issue:** Application shows undefined Supabase URL/key at runtime
 
 **Solution:**
-1. Verify environment variables are set in Vercel project settings
-2. Ensure variables are prefixed with `VITE_`
-3. Check that variables are enabled for all environments (Production, Preview, Development)
-4. Redeploy after updating environment variables
-5. Check browser console for which specific variable is missing
+1. Verify environment variables are set in Vercel project Settings > Environment Variables
+2. Ensure variables are named exactly:
+   - `VITE_SUPABASE_URL` (not `SUPABASE_URL`)
+   - `VITE_SUPABASE_ANON_KEY` (not `SUPABASE_ANON_KEY`)
+3. Check that variables are enabled for all environments: `Production`, `Preview`, `Development`
+4. CRITICAL: After adding/updating environment variables:
+   - Go to "Deployments" tab
+   - Click three-dot menu on latest deployment
+   - Select "Redeploy" to rebuild with new variables
+   - Or push a new commit to trigger redeploy
+5. Verify values in browser console: `console.log(import.meta.env.VITE_SUPABASE_URL)`
+6. Check that the app is running the newly deployed version (check build timestamp)
 
 ### Build Succeeds but App Shows Blank Page
 
 **Issue:** No errors in console but application not rendering
 
 **Solution:**
-1. Check browser console for JavaScript errors
-2. Verify Supabase credentials are correct
-3. Check Supabase project is accessible from Vercel
-4. Review Network tab in browser DevTools for failed API calls
+1. Check browser console (F12) for JavaScript errors
+2. Verify Supabase credentials are correct in Environment Variables
+3. Check Supabase project is accessible from Vercel (no CORS issues)
+4. Review Network tab in browser DevTools for failed API calls to Supabase
 5. Check Vercel deployment logs for build warnings
+6. Verify the `index.html` file exists in the output directory (`dist/`)
+7. Check that React/application mount point exists in HTML
 
 ### Preview Deployments Not Created for PRs
 
@@ -251,8 +369,11 @@ Format: `https://chotter-[project]-[git-hash].vercel.app`
 **Solution:**
 1. Verify Vercel GitHub app is installed on repository
 2. Check Vercel project settings for GitHub configuration
-3. Re-authorize Vercel GitHub app if needed
+3. Re-authorize Vercel GitHub app if needed:
+   - Go to Vercel project settings > Git Integrations
+   - Disconnect and reconnect GitHub
 4. Check repository branch protection rules don't block deployments
+5. Ensure PR source branch is not ignored in Vercel settings
 
 ## Custom Domains
 

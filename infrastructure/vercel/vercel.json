@@ -1,7 +1,5 @@
 {
   "github": {
     "silent": true
-  },
-  "buildCommand": "bun run build",
-  "installCommand": "bun install"
+  }
 }
