@@ -1,0 +1,55 @@
+# Railway Deployment Configuration for Chotter API
+# This file configures how the Hono API with Bun is built and deployed on Railway
+
+[build]
+# Use Dockerfile for building
+builder = "DOCKERFILE"
+dockerfilePath = "infrastructure/railway/Dockerfile"
+
+# Build context from root of repository
+buildContext = "."
+
+# Caching strategy for Docker layers
+dockerBuildArgs = []
+
+[deploy]
+# Start command (should match Dockerfile CMD)
+startCommand = "bun run dist/index.js"
+
+# Health check configuration
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+healthcheckInterval = 30
+
+# Restart policy for failed deployments
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Port configuration
+port = 3000
+
+# Resource limits
+memoryRequest = "256Mi"
+memoryLimit = "512Mi"
+cpuRequest = "100m"
+cpuLimit = "500m"
+
+# Replica count (scale to 1 for staging, increase for production)
+numReplicas = 1
+
+# Sleep application when not in use (set to false for production)
+sleepApplication = false
+
+# Graceful shutdown timeout (seconds)
+gracefulShutdownTimeout = 30
+
+[environment]
+# Application environment
+NODE_ENV = "production"
+BUN_ENV = "production"
+PORT = "3000"
+
+# These will be overridden by Railway secrets
+# SUPABASE_URL = "https://your-project.supabase.co"
+# SUPABASE_ANON_KEY = "your-anon-key"
+# SUPABASE_SERVICE_ROLE_KEY = "your-service-role-key"
