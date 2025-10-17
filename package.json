@@ -1,0 +1,64 @@
+{
+  "name": "chotter-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chotter - AI-powered field service SaaS platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "workers/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter \"./apps/*\" dev",
+    "dev:admin": "bun run --filter web-admin dev",
+    "dev:customer": "bun run --filter web-customer dev",
+    "dev:mobile": "bun run --filter mobile-tech start",
+    "dev:api": "bun run --filter api dev",
+    "build": "bun run --filter \"./apps/*\" --filter \"./packages/*\" build",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "tsc --noEmit",
+    "db:migrate": "cd supabase && supabase db push",
+    "db:reset": "cd supabase && supabase db reset",
+    "db:generate-types": "supabase gen types typescript --local > packages/database/src/types/database.ts",
+    "db:seed": "cd supabase && supabase db seed",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "happy-dom": "^20.0.5",
+    "husky": "^8.0.3",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/chotter.git"
+  },
+  "keywords": [
+    "field-service",
+    "saas",
+    "route-optimization",
+    "ai-booking",
+    "scheduling"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

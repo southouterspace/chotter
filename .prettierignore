@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build outputs
+dist/
+build/
+.next/
+.expo/
+.nuxt/
+out/
+coverage/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Git
+.git/
+.github/
+
+# Database
+.supabase/
+supabase/migrations/
+
+# Misc
+.turbo/
+tsconfig.tsbuildinfo
