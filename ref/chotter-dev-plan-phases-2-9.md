@@ -266,12 +266,12 @@ export const appointmentSchema = z.object({
 
 **Acceptance Criteria:**
 
-- [ ] Can create new appointment
-- [ ] Can edit existing appointment
-- [ ] Form validation works
-- [ ] Customer search autocomplete works
-- [ ] Technician filtered by service skills
-- [ ] Appointment appears on calendar after creation
+- [x] Can create new appointment
+- [x] Can edit existing appointment
+- [x] Form validation works
+- [x] Customer search autocomplete works
+- [x] Technician filtered by service skills
+- [x] Appointment appears on calendar after creation
 
 **Dependencies:** P2.3
 
@@ -395,12 +395,12 @@ interface WorkingHours {
 
 **Acceptance Criteria:**
 
-- [ ] Technician list displays all techs
-- [ ] Can create new technician
-- [ ] Skills saved as JSONB array
-- [ ] Certifications saved as JSONB array
-- [ ] Working hours editor saves schedule
-- [ ] Can view technician performance metrics
+- [x] Technician list displays all techs
+- [x] Can create new technician
+- [x] Skills saved as array in technician_tags table
+- [ ] Certifications saved as array in technician_tags table (not implemented)
+- [x] Working hours editor saves schedule to technician_availability table
+- [ ] Can view technician performance metrics (not implemented)
 
 **Dependencies:** P2.5
 
@@ -443,11 +443,11 @@ Build service type management page for creating and configuring bookable service
 
 **Acceptance Criteria:**
 
-- [ ] Service list displays all services
-- [ ] Can create new service with pricing
-- [ ] Required skills multi-select works
-- [ ] Can reorder services via drag-and-drop
-- [ ] Active/inactive toggle works
+- [x] Service list displays all services
+- [x] Can create new service with pricing
+- [x] Required skills multi-select works
+- [ ] Can reorder services via drag-and-drop (not implemented)
+- [x] Active/inactive toggle works
 
 **Dependencies:** P2.6
 
