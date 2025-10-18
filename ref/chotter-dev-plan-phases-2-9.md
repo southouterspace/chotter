@@ -87,12 +87,14 @@ Set up React + Vite app with routing, authentication, and layout structure.
 
 **Acceptance Criteria:**
 
-- [ ] App runs with `bun run dev`
-- [ ] Can log in with Supabase Auth
-- [ ] Protected routes redirect to login
-- [ ] Layout renders with sidebar navigation
-- [ ] Tailwind CSS working
-- [ ] Type-safe routing
+- [x] App runs with `bun run dev`
+- [x] Can log in with Supabase Auth
+- [x] Protected routes redirect to login
+- [x] Layout renders with sidebar navigation
+- [x] Tailwind CSS working
+- [x] Type-safe routing
+- [x] shadcn/ui components integrated
+- [x] Vercel project created and linked
 
 **Dependencies:** P1.9 (UI components), P1.7 (database types), P1.8 (auth)
 
