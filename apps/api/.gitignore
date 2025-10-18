@@ -1,0 +1,15 @@
+# Environment files
+.env
+.env.local
+
+# Build output
+dist/
+*.log
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+.DS_Store
