@@ -55,54 +55,54 @@ CREATE POLICY "Users can view their business service_types"
     business_id IN (
       SELECT business_id
       FROM persons
-      WHERE auth_user_id = auth.uid()
+      WHERE id = auth.uid()
     )
   );
 
--- Policy: Business owners and managers can insert service_types
-CREATE POLICY "Business owners and managers can insert service_types"
+-- Policy: Admins can insert service_types
+CREATE POLICY "Admins can insert service_types"
   ON service_types
   FOR INSERT
   WITH CHECK (
     business_id IN (
       SELECT business_id
       FROM persons
-      WHERE auth_user_id = auth.uid()
-      AND role IN ('business_owner', 'office_manager')
+      WHERE id = auth.uid()
+      AND role = 'admin'
     )
   );
 
--- Policy: Business owners and managers can update service_types
-CREATE POLICY "Business owners and managers can update service_types"
+-- Policy: Admins can update service_types
+CREATE POLICY "Admins can update service_types"
   ON service_types
   FOR UPDATE
   USING (
     business_id IN (
       SELECT business_id
       FROM persons
-      WHERE auth_user_id = auth.uid()
-      AND role IN ('business_owner', 'office_manager')
+      WHERE id = auth.uid()
+      AND role = 'admin'
     )
   )
   WITH CHECK (
     business_id IN (
       SELECT business_id
       FROM persons
-      WHERE auth_user_id = auth.uid()
-      AND role IN ('business_owner', 'office_manager')
+      WHERE id = auth.uid()
+      AND role = 'admin'
     )
   );
 
--- Policy: Business owners can delete service_types
-CREATE POLICY "Business owners can delete service_types"
+-- Policy: Admins can delete service_types
+CREATE POLICY "Admins can delete service_types"
   ON service_types
   FOR DELETE
   USING (
     business_id IN (
       SELECT business_id
       FROM persons
-      WHERE auth_user_id = auth.uid()
-      AND role = 'business_owner'
+      WHERE id = auth.uid()
+      AND role = 'admin'
     )
   );
 
