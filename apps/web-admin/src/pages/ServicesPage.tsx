@@ -50,8 +50,8 @@ export function ServicesPage() {
         description: data.description || null,
         base_price: dollarsToCents(data.price),
         estimated_duration: minutesToInterval(data.durationMinutes),
-        required_skills: data.requiredSkills,
-        is_active: data.isActive,
+        required_skills: data.requiredSkills || [],
+        is_active: data.isActive ?? true,
       })
 
       toast({
@@ -80,8 +80,8 @@ export function ServicesPage() {
           description: data.description || null,
           base_price: dollarsToCents(data.price),
           estimated_duration: minutesToInterval(data.durationMinutes),
-          required_skills: data.requiredSkills,
-          is_active: data.isActive,
+          required_skills: data.requiredSkills || [],
+          is_active: data.isActive ?? true,
         },
       })
 

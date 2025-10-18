@@ -43,8 +43,8 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
       description: service?.description || '',
       price: service ? centsToDollars(service.base_price) : 0,
       durationMinutes: service ? intervalToMinutes(service.estimated_duration) : 60,
-      requiredSkills: service?.required_skills,
-      isActive: service?.is_active,
+      requiredSkills: service?.required_skills || [],
+      isActive: service?.is_active ?? true,
     },
   })
 
@@ -56,8 +56,8 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
         description: service.description || '',
         price: centsToDollars(service.base_price),
         durationMinutes: intervalToMinutes(service.estimated_duration),
-        requiredSkills: service.required_skills,
-        isActive: service.is_active,
+        requiredSkills: service.required_skills || [],
+        isActive: service.is_active ?? true,
       })
     }
   }, [service, form])
@@ -66,7 +66,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
     const trimmedSkill = skillInput.trim()
     if (!trimmedSkill) return
 
-    const currentSkills = form.getValues('requiredSkills')
+    const currentSkills = form.getValues('requiredSkills') || []
     if (!currentSkills.includes(trimmedSkill)) {
       form.setValue('requiredSkills', [...currentSkills, trimmedSkill])
     }
@@ -74,7 +74,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
   }
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    const currentSkills = form.getValues('requiredSkills')
+    const currentSkills = form.getValues('requiredSkills') || []
     form.setValue(
       'requiredSkills',
       currentSkills.filter(skill => skill !== skillToRemove)
