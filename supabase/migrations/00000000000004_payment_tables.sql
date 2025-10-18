@@ -29,8 +29,8 @@ CREATE TYPE pricing_applies_to AS ENUM (
   'emergency_only'
 );
 
--- Payment status
-CREATE TYPE payment_status AS ENUM (
+-- Stripe payment intent status
+CREATE TYPE stripe_payment_status AS ENUM (
   'pending',
   'requires_action',
   'processing',
@@ -198,7 +198,7 @@ CREATE TABLE payments (
   currency TEXT NOT NULL DEFAULT 'usd',
 
   -- Status tracking
-  status payment_status NOT NULL DEFAULT 'pending',
+  status stripe_payment_status NOT NULL DEFAULT 'pending',
   payment_method_type payment_method_type NOT NULL,
   payment_method_details JSONB,
 
@@ -272,7 +272,7 @@ CREATE TABLE refunds (
   reason_details TEXT,
 
   -- Audit trail
-  requested_by_id UUID NOT NULL REFERENCES people(id) ON DELETE RESTRICT,
+  requested_by_id UUID NOT NULL REFERENCES persons(id) ON DELETE RESTRICT,
   requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   processed_at TIMESTAMPTZ,
 
@@ -314,22 +314,22 @@ COMMENT ON COLUMN refunds.requested_by_id IS 'Person who initiated the refund (a
 CREATE TRIGGER set_updated_at_payment_settings
   BEFORE UPDATE ON payment_settings
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_pricing_rules
   BEFORE UPDATE ON pricing_rules
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_payments
   BEFORE UPDATE ON payments
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_refunds
   BEFORE UPDATE ON refunds
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 -- =============================================
 -- SECURITY NOTES

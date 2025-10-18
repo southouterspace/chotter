@@ -87,7 +87,7 @@ CREATE TABLE media (
   entity_id UUID NOT NULL,
 
   -- Upload metadata
-  uploaded_by_id UUID NOT NULL REFERENCES people(id) ON DELETE RESTRICT,
+  uploaded_by_id UUID NOT NULL REFERENCES persons(id) ON DELETE RESTRICT,
   uploader_role uploader_role NOT NULL,
 
   -- File details
@@ -135,7 +135,7 @@ CREATE TABLE notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_id UUID NOT NULL REFERENCES businesses(id) ON DELETE RESTRICT,
   ticket_id UUID REFERENCES tickets(id) ON DELETE SET NULL,
-  recipient_id UUID NOT NULL REFERENCES people(id) ON DELETE RESTRICT,
+  recipient_id UUID NOT NULL REFERENCES persons(id) ON DELETE RESTRICT,
 
   -- Notification details
   notification_type notification_type NOT NULL,
@@ -278,8 +278,8 @@ CREATE TABLE status_history (
   to_status ticket_status NOT NULL,
 
   -- Who made the change
-  changed_by_id UUID REFERENCES people(id) ON DELETE SET NULL,
-  changed_by_role user_role NOT NULL,
+  changed_by_id UUID REFERENCES persons(id) ON DELETE SET NULL,
+  changed_by_role person_role NOT NULL,
   reason TEXT,
 
   -- Timestamp (append-only, no updated_at)
@@ -315,7 +315,7 @@ CREATE TABLE route_events (
   new_sequence JSONB,
 
   -- Trigger information
-  triggered_by_id UUID REFERENCES people(id) ON DELETE SET NULL,
+  triggered_by_id UUID REFERENCES persons(id) ON DELETE SET NULL,
   trigger_reason TEXT,
 
   -- Optimization metrics
@@ -358,7 +358,7 @@ CREATE TABLE on_call_schedules (
   response_time_minutes INTEGER NOT NULL CHECK (response_time_minutes > 0),
 
   -- Audit
-  created_by_id UUID NOT NULL REFERENCES people(id) ON DELETE RESTRICT,
+  created_by_id UUID NOT NULL REFERENCES persons(id) ON DELETE RESTRICT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -433,17 +433,17 @@ COMMENT ON COLUMN emergency_requests.auto_assigned IS 'True if AI assigned, fals
 CREATE TRIGGER set_updated_at_notifications
   BEFORE UPDATE ON notifications
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_on_call_schedules
   BEFORE UPDATE ON on_call_schedules
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_emergency_requests
   BEFORE UPDATE ON emergency_requests
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 -- Note: No updated_at triggers for append-only tables:
 -- - location_history

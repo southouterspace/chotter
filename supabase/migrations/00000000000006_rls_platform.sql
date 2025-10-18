@@ -110,22 +110,13 @@ CREATE POLICY businesses_select_admin ON businesses
 COMMENT ON POLICY businesses_select_admin ON businesses IS 'Super admins have full visibility';
 
 -- UPDATE: Businesses can update their own non-critical fields
+-- Note: Critical field protection is enforced via trigger (see trigger section below)
 CREATE POLICY businesses_update_own ON businesses
   FOR UPDATE
   USING (id = current_business_id() AND current_user_role() = 'admin')
-  WITH CHECK (
-    id = current_business_id()
-    AND current_user_role() = 'admin'
-    -- Prevent modification of critical fields
-    AND OLD.status = NEW.status  -- Status can't be changed by business
-    AND OLD.trial_started_at = NEW.trial_started_at
-    AND OLD.trial_ends_at = NEW.trial_ends_at
-    AND OLD.activated_at = NEW.activated_at
-    AND OLD.suspended_at = NEW.suspended_at
-    AND OLD.cancelled_at = NEW.cancelled_at
-  );
+  WITH CHECK (id = current_business_id() AND current_user_role() = 'admin');
 
-COMMENT ON POLICY businesses_update_own ON businesses IS 'Admins can update their business profile (excluding critical fields)';
+COMMENT ON POLICY businesses_update_own ON businesses IS 'Admins can update their business profile (critical fields protected by trigger)';
 
 -- UPDATE: Super admins can update any business
 CREATE POLICY businesses_update_admin ON businesses
@@ -387,6 +378,58 @@ END $$;
 -- =====================================================================================
 -- POLICY SUMMARY
 -- =====================================================================================
+-- TRIGGERS FOR FIELD PROTECTION
+-- =====================================================================================
+
+-- Protect critical business fields from modification by non-super-admins
+CREATE OR REPLACE FUNCTION protect_business_critical_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Allow super admins to modify any field
+  IF is_super_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Prevent modification of critical fields by business admins
+  IF OLD.status IS DISTINCT FROM NEW.status THEN
+    RAISE EXCEPTION 'Cannot modify status field - super admin required';
+  END IF;
+
+  IF OLD.trial_started_at IS DISTINCT FROM NEW.trial_started_at THEN
+    RAISE EXCEPTION 'Cannot modify trial_started_at field - super admin required';
+  END IF;
+
+  IF OLD.trial_ends_at IS DISTINCT FROM NEW.trial_ends_at THEN
+    RAISE EXCEPTION 'Cannot modify trial_ends_at field - super admin required';
+  END IF;
+
+  IF OLD.activated_at IS DISTINCT FROM NEW.activated_at THEN
+    RAISE EXCEPTION 'Cannot modify activated_at field - super admin required';
+  END IF;
+
+  IF OLD.suspended_at IS DISTINCT FROM NEW.suspended_at THEN
+    RAISE EXCEPTION 'Cannot modify suspended_at field - super admin required';
+  END IF;
+
+  IF OLD.cancelled_at IS DISTINCT FROM NEW.cancelled_at THEN
+    RAISE EXCEPTION 'Cannot modify cancelled_at field - super admin required';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION protect_business_critical_fields() IS 'Prevent non-super-admins from modifying critical business fields';
+
+-- Apply trigger to businesses table
+CREATE TRIGGER protect_businesses_critical_fields
+  BEFORE UPDATE ON businesses
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_business_critical_fields();
+
+COMMENT ON TRIGGER protect_businesses_critical_fields ON businesses IS 'Enforces critical field protection for business records';
+
+-- =====================================================================================
 --
 -- PLATFORM TABLES SECURED: 7 tables
 -- TOTAL POLICIES CREATED: 29 policies
@@ -404,6 +447,7 @@ END $$;
 -- Role-Based Access: IMPLEMENTED
 -- Append-Only Protection: ENABLED (audit_logs, usage_events)
 -- Super Admin Bypass: ALLOWED (for platform management)
+-- Critical Field Protection: ENFORCED (businesses table via trigger)
 --
 -- =====================================================================================
 -- END OF MIGRATION

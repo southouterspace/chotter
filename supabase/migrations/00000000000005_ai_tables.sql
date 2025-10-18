@@ -239,7 +239,7 @@ COMMENT ON COLUMN ai_usage_events.cost_cents IS 'Optional cost tracking in cents
 CREATE TRIGGER set_updated_at_ai_agents
   BEFORE UPDATE ON ai_agents
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at();
+  EXECUTE FUNCTION update_updated_at_column();
 
 -- Note: No updated_at for ai_conversations or ai_usage_events
 -- ai_conversations are created and rarely updated
