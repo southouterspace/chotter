@@ -2,9 +2,10 @@ import { useState, useCallback } from 'react'
 import { AppointmentCalendar, type CalendarView } from '@/components/AppointmentCalendar'
 import { CalendarFilters } from '@/components/CalendarFilters'
 import { AppointmentDetailsDialog } from '@/components/AppointmentDetailsDialog'
+import { AppointmentModal } from '@/components/AppointmentModal'
 import { useAppointments, type AppointmentFilters } from '@/hooks/useAppointments'
 import { Button } from '@/components/ui/button'
-import { Calendar, CalendarDays, CalendarRange } from 'lucide-react'
+import { Calendar, CalendarDays, CalendarRange, Plus } from 'lucide-react'
 import type { EventClickArg } from '@fullcalendar/core'
 
 const VIEW_OPTIONS: { value: CalendarView; label: string; icon: typeof Calendar }[] = [
@@ -18,8 +19,9 @@ export function SchedulePage() {
   const [filters, setFilters] = useState<AppointmentFilters>({})
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
 
-  const { events, appointments, loading, error } = useAppointments(filters)
+  const { events, appointments, loading, error, refetch } = useAppointments(filters)
 
   const handleEventClick = useCallback((eventInfo: EventClickArg) => {
     const appointment = appointments.find(apt => apt.id === eventInfo.event.id)
@@ -49,23 +51,31 @@ export function SchedulePage() {
           </p>
         </div>
 
-        {/* View Switcher */}
-        <div className="flex gap-2">
-          {VIEW_OPTIONS.map(option => {
-            const Icon = option.icon
-            return (
-              <Button
-                key={option.value}
-                variant={view === option.value ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setView(option.value)}
-                className="gap-2"
-              >
-                <Icon className="h-4 w-4" />
-                {option.label}
-              </Button>
-            )
-          })}
+        <div className="flex gap-3">
+          {/* New Appointment Button */}
+          <Button onClick={() => setAppointmentModalOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            New Appointment
+          </Button>
+
+          {/* View Switcher */}
+          <div className="flex gap-2">
+            {VIEW_OPTIONS.map(option => {
+              const Icon = option.icon
+              return (
+                <Button
+                  key={option.value}
+                  variant={view === option.value ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setView(option.value)}
+                  className="gap-2"
+                >
+                  <Icon className="h-4 w-4" />
+                  {option.label}
+                </Button>
+              )
+            })}
+          </div>
         </div>
       </div>
 
@@ -156,6 +166,15 @@ export function SchedulePage() {
         appointment={selectedAppointment}
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
+      />
+
+      {/* Create/Edit Appointment Modal */}
+      <AppointmentModal
+        open={appointmentModalOpen}
+        onOpenChange={setAppointmentModalOpen}
+        onSuccess={() => {
+          refetch()
+        }}
       />
     </div>
   )
