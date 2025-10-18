@@ -153,11 +153,15 @@ const { data: technicians } = await supabase
 
 **Acceptance Criteria:**
 
-- [ ] Stats widgets display correct counts
-- [ ] Live map shows technician locations
-- [ ] Activity feed shows recent updates
-- [ ] Real-time updates via Supabase Realtime
-- [ ] Responsive design
+- [x] Stats widgets display correct counts
+- [x] Live map shows technician locations
+- [x] Activity feed shows recent updates
+- [x] Real-time updates via Supabase Realtime
+- [x] Responsive design
+- [x] Google Maps integration with @vis.gl/react-google-maps
+- [x] Color-coded technician markers
+- [x] Interactive info windows
+- [x] Loading states with skeletons
 
 **Dependencies:** P2.1
 
