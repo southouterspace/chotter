@@ -44,7 +44,10 @@ export const technicianFormSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Phone number must be at least 10 digits'),
+  phone: z.string()
+    .regex(/^\+[1-9]\d{1,14}$/, 'Phone must be in E.164 format (e.g., +12025551234)')
+    .or(z.literal(''))
+    .optional(),
   skills: z.array(z.string()).min(1, 'At least one skill is required'),
   hourlyRate: z.number().min(0, 'Hourly rate must be positive').optional(),
   notes: z.string().optional(),

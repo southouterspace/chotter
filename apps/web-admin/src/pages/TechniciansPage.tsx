@@ -6,6 +6,7 @@ import { TechnicianForm } from '@/components/TechnicianForm'
 import { TechnicianDetail } from '@/components/TechnicianDetail'
 import { useCreateTechnician } from '@/hooks/useCreateTechnician'
 import { useToast } from '@/hooks/useToast'
+import { useAuth } from '@/hooks/useAuth'
 import type { TechnicianData } from '@/hooks/useTechnicians'
 import type { TechnicianFormData } from '@/lib/validation/technician'
 import { UserPlus, Users } from 'lucide-react'
@@ -17,6 +18,7 @@ export function TechniciansPage() {
   const [selectedTechnician, setSelectedTechnician] = useState<TechnicianData | null>(null)
   const createTechnician = useCreateTechnician()
   const { toast } = useToast()
+  const { user } = useAuth()
 
   const handleSelectTechnician = (technician: TechnicianData) => {
     setSelectedTechnician(technician)
@@ -28,10 +30,19 @@ export function TechniciansPage() {
   }
 
   const handleCreate = async (data: TechnicianFormData) => {
+    if (!user?.id) {
+      toast({
+        title: 'Error',
+        description: 'You must be logged in to create a technician',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       await createTechnician.mutateAsync({
         ...data,
-        authUserId: 'temp-auth-id', // TODO: Get from auth context
+        authUserId: user.id,
       })
       toast({
         title: 'Success',

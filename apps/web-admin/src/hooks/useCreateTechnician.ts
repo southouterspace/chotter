@@ -3,7 +3,6 @@ import { supabase } from '@/lib/supabase'
 import type { TechnicianFormData } from '@/lib/validation/technician'
 
 const BUSINESS_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' // Acme HVAC
-const AUTH_USER_ID = 'auth-user-placeholder' // TODO: Get from auth context
 
 interface CreateTechnicianParams extends TechnicianFormData {
   authUserId: string
@@ -15,7 +14,7 @@ async function createTechnician(data: CreateTechnicianParams) {
     .from('persons')
     .insert({
       business_id: BUSINESS_ID,
-      auth_user_id: data.authUserId || AUTH_USER_ID,
+      auth_user_id: data.authUserId,
       role: 'technician',
       first_name: data.firstName,
       last_name: data.lastName,
