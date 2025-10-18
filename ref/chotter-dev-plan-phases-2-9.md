@@ -202,11 +202,11 @@ Build calendar view for viewing and managing appointments across days/weeks.
 
 **Acceptance Criteria:**
 
-- [ ] Calendar displays appointments
-- [ ] Can switch between day/week/month views
-- [ ] Appointments color-coded by status
-- [ ] Filters work correctly
-- [ ] Click appointment to view details
+- [x] Calendar displays appointments
+- [x] Can switch between day/week/month views
+- [x] Appointments color-coded by status
+- [x] Filters work correctly
+- [x] Click appointment to view details
 
 **Dependencies:** P2.2
 
