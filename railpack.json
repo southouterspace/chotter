@@ -1,0 +1,19 @@
+{
+  "$schema": "https://railpack.com/schema.json",
+  "runtime": {
+    "language": "bun",
+    "version": "latest"
+  },
+  "build": {
+    "command": "bun install && bun run --filter @chotter/api build",
+    "workingDirectory": "."
+  },
+  "start": {
+    "command": "bun run apps/api/dist/index.js"
+  },
+  "watch": [
+    "apps/api/**",
+    "packages/database/**",
+    "packages/utils/**"
+  ]
+}
