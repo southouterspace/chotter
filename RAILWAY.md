@@ -1,6 +1,6 @@
 # Railway Deployment Guide
 
-This project uses modern Railway deployment with Nixpacks and Bun runtime.
+This project uses modern Railway deployment with Railpack and Bun runtime.
 
 ## 🚀 Quick Deploy
 
@@ -17,7 +17,7 @@ This project uses modern Railway deployment with Nixpacks and Bun runtime.
 This project includes:
 
 - **`railway.json`** - Railway service configuration
-- **`nixpacks.toml`** - Nixpacks build configuration for Bun
+- **`railpack.json`** - Railpack build configuration for Bun
 - **`.env.example`** - Environment variable template
 
 ## 📦 Monorepo Structure
@@ -64,9 +64,9 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 ### 2. Configure Service
 
-Railway will auto-detect the configuration from `railway.json`:
+Railway will auto-detect the configuration from `railway.json` and `railpack.json`:
 
-- ✅ **Builder**: Nixpacks (with Bun)
+- ✅ **Builder**: Railpack (with Bun)
 - ✅ **Build Command**: `bun install && bun run --filter @chotter/api build`
 - ✅ **Start Command**: `bun run --filter @chotter/api start`
 - ✅ **Watch Paths**: `apps/api/**`, `packages/**`
@@ -117,8 +117,9 @@ Railway will automatically redeploy when you push to the configured branch:
 
 ### Build fails with "command not found: bun"
 
-- Ensure `nixpacks.toml` is in the repository root
-- Check that Nixpacks is selected (not Dockerfile)
+- Ensure `railpack.json` is in the repository root
+- Check that Railpack is selected (not Dockerfile)
+- Verify Bun runtime is specified in railpack.json
 
 ### "Cannot find module '@chotter/database'"
 
@@ -155,7 +156,7 @@ Railway provides:
 ## 📚 Additional Resources
 
 - [Railway Docs](https://docs.railway.app)
-- [Nixpacks Docs](https://nixpacks.com)
+- [Railpack Docs](https://railpack.com)
 - [Bun Runtime](https://bun.sh)
 - [Hono Framework](https://hono.dev)
 
