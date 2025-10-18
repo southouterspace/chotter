@@ -79,16 +79,13 @@ CREATE POLICY persons_select_super_admin ON persons
 COMMENT ON POLICY persons_select_super_admin ON persons IS 'Super admins have full visibility';
 
 -- UPDATE: Users can update their own non-critical fields
+-- Note: Critical field protection (role, business_id) is enforced via trigger
 CREATE POLICY persons_update_self ON persons
   FOR UPDATE
   USING (id = current_person_id())
-  WITH CHECK (
-    id = current_person_id()
-    AND OLD.role = NEW.role  -- Can't change own role
-    AND OLD.business_id = NEW.business_id  -- Can't change business
-  );
+  WITH CHECK (id = current_person_id());
 
-COMMENT ON POLICY persons_update_self ON persons IS 'Users can update their own profile';
+COMMENT ON POLICY persons_update_self ON persons IS 'Users can update their own profile (critical fields protected by trigger)';
 
 -- UPDATE: Admins can update persons in their business
 CREATE POLICY persons_update_admin ON persons
@@ -225,18 +222,16 @@ CREATE POLICY technicians_select_super_admin ON technicians
 COMMENT ON POLICY technicians_select_super_admin ON technicians IS 'Super admins have full visibility';
 
 -- UPDATE: Technicians can update their own non-sensitive fields
+-- Note: Sensitive field protection (hire_date, hourly_rate_cents) is enforced via trigger
 CREATE POLICY technicians_update_self ON technicians
   FOR UPDATE
   USING (person_id = current_person_id() AND current_user_role() = 'technician')
   WITH CHECK (
     person_id = current_person_id()
     AND current_user_role() = 'technician'
-    -- Prevent changing sensitive fields
-    AND OLD.hire_date = NEW.hire_date
-    AND OLD.hourly_rate_cents = NEW.hourly_rate_cents
   );
 
-COMMENT ON POLICY technicians_update_self ON technicians IS 'Technicians can update their own profile (excluding sensitive fields)';
+COMMENT ON POLICY technicians_update_self ON technicians IS 'Technicians can update their own profile (sensitive fields protected by trigger)';
 
 -- UPDATE: Admins can update all fields
 CREATE POLICY technicians_update_admin ON technicians
@@ -356,13 +351,9 @@ CREATE POLICY tickets_update_technician ON tickets
       SELECT id FROM technicians WHERE person_id = current_person_id()
     )
     AND current_user_role() = 'technician'
-    -- Technicians can't reassign tickets
-    AND OLD.assigned_technician_id = NEW.assigned_technician_id
-    AND OLD.customer_id = NEW.customer_id
-    AND OLD.business_id = NEW.business_id
   );
 
-COMMENT ON POLICY tickets_update_technician ON tickets IS 'Technicians can update assigned tickets (status, times, notes)';
+COMMENT ON POLICY tickets_update_technician ON tickets IS 'Technicians can update assigned tickets (critical fields protected by trigger)';
 
 -- UPDATE: Admins can update all tickets
 CREATE POLICY tickets_update_admin ON tickets
@@ -436,12 +427,9 @@ CREATE POLICY routes_update_technician ON routes
       SELECT id FROM technicians WHERE person_id = current_person_id()
     )
     AND current_user_role() = 'technician'
-    -- Technicians can only update execution fields
-    AND OLD.waypoints = NEW.waypoints  -- Can't change route
-    AND OLD.assigned_technician_id = NEW.assigned_technician_id
   );
 
-COMMENT ON POLICY routes_update_technician ON routes IS 'Technicians can update route execution status';
+COMMENT ON POLICY routes_update_technician ON routes IS 'Technicians can update route execution status (critical fields protected by trigger)';
 
 -- INSERT/UPDATE/DELETE: Admins have full control
 CREATE POLICY routes_modify_admin ON routes
@@ -1182,6 +1170,135 @@ BEGIN
 END $$;
 
 -- =====================================================================================
+-- TRIGGERS FOR CRITICAL FIELD PROTECTION
+-- =====================================================================================
+
+-- Protect critical person fields from self-modification
+CREATE OR REPLACE FUNCTION protect_person_critical_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Allow admins and super admins to modify any field
+  IF current_user_role() IN ('admin', 'super_admin') OR is_super_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Prevent users from changing their own role
+  IF OLD.role IS DISTINCT FROM NEW.role THEN
+    RAISE EXCEPTION 'Cannot modify your own role - admin required';
+  END IF;
+
+  -- Prevent users from changing their business_id
+  IF OLD.business_id IS DISTINCT FROM NEW.business_id THEN
+    RAISE EXCEPTION 'Cannot change business_id - admin required';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION protect_person_critical_fields() IS 'Prevent users from modifying their own role or business_id';
+
+CREATE TRIGGER protect_persons_critical_fields
+  BEFORE UPDATE ON persons
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_person_critical_fields();
+
+-- Protect sensitive technician fields from self-modification
+CREATE OR REPLACE FUNCTION protect_technician_sensitive_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Allow admins and super admins to modify any field
+  IF current_user_role() IN ('admin', 'super_admin') OR is_super_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Prevent technicians from changing hire_date
+  IF OLD.hire_date IS DISTINCT FROM NEW.hire_date THEN
+    RAISE EXCEPTION 'Cannot modify hire_date - admin required';
+  END IF;
+
+  -- Prevent technicians from changing hourly_rate_cents
+  IF OLD.hourly_rate_cents IS DISTINCT FROM NEW.hourly_rate_cents THEN
+    RAISE EXCEPTION 'Cannot modify hourly_rate_cents - admin required';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION protect_technician_sensitive_fields() IS 'Prevent technicians from modifying hire_date or hourly_rate_cents';
+
+CREATE TRIGGER protect_technicians_sensitive_fields
+  BEFORE UPDATE ON technicians
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_technician_sensitive_fields();
+
+-- Protect critical ticket fields from technician modification
+CREATE OR REPLACE FUNCTION protect_ticket_critical_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Allow admins and super admins to modify any field
+  IF current_user_role() IN ('admin', 'super_admin') OR is_super_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Prevent technicians from reassigning tickets
+  IF OLD.assigned_technician_id IS DISTINCT FROM NEW.assigned_technician_id THEN
+    RAISE EXCEPTION 'Cannot reassign ticket - admin required';
+  END IF;
+
+  -- Prevent technicians from changing customer
+  IF OLD.customer_id IS DISTINCT FROM NEW.customer_id THEN
+    RAISE EXCEPTION 'Cannot change customer - admin required';
+  END IF;
+
+  -- Prevent technicians from changing business
+  IF OLD.business_id IS DISTINCT FROM NEW.business_id THEN
+    RAISE EXCEPTION 'Cannot change business_id - admin required';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION protect_ticket_critical_fields() IS 'Prevent technicians from reassigning tickets or changing critical fields';
+
+CREATE TRIGGER protect_tickets_critical_fields
+  BEFORE UPDATE ON tickets
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_ticket_critical_fields();
+
+-- Protect critical route fields from technician modification
+CREATE OR REPLACE FUNCTION protect_route_critical_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Allow admins and super admins to modify any field
+  IF current_user_role() IN ('admin', 'super_admin') OR is_super_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Prevent technicians from changing waypoints
+  IF OLD.waypoints IS DISTINCT FROM NEW.waypoints THEN
+    RAISE EXCEPTION 'Cannot modify route waypoints - admin required';
+  END IF;
+
+  -- Prevent technicians from reassigning route
+  IF OLD.assigned_technician_id IS DISTINCT FROM NEW.assigned_technician_id THEN
+    RAISE EXCEPTION 'Cannot reassign route - admin required';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION protect_route_critical_fields() IS 'Prevent technicians from modifying route waypoints or reassigning routes';
+
+CREATE TRIGGER protect_routes_critical_fields
+  BEFORE UPDATE ON routes
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_route_critical_fields();
+
+-- =====================================================================================
 -- POLICY SUMMARY
 -- =====================================================================================
 --
@@ -1221,6 +1338,11 @@ END $$;
 -- Append-Only Protection: ENABLED (6 tables)
 -- Privacy Protection: ENABLED (customers can't see technician details)
 -- Data Leakage Prevention: VERIFIED (no cross-business access possible)
+-- Critical Field Protection: ENFORCED (4 tables via triggers)
+--   ✓ persons: role, business_id protected from self-modification
+--   ✓ technicians: hire_date, hourly_rate_cents protected from self-modification
+--   ✓ tickets: assigned_technician_id, customer_id, business_id protected from technicians
+--   ✓ routes: waypoints, assigned_technician_id protected from technicians
 --
 -- =====================================================================================
 -- END OF MIGRATION
