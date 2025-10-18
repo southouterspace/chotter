@@ -3,6 +3,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Layout } from '@/components/Layout'
 import { LoginPage } from '@/pages/LoginPage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { SchedulePage } from '@/pages/SchedulePage'
 
 export function AppRoutes() {
   return (
@@ -14,6 +15,16 @@ export function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <DashboardPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/schedule"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <SchedulePage />
             </Layout>
           </ProtectedRoute>
         }
