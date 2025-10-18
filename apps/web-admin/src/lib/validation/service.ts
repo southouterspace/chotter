@@ -32,12 +32,12 @@ export const serviceFormSchema = z.object({
   // Array of skill names required for this service
   requiredSkills: z
     .array(z.string())
-    .default([]),
+    .optional(),
 
   // Active/inactive status
   isActive: z
     .boolean()
-    .default(true),
+    .optional(),
 })
 
 export type ServiceFormData = z.infer<typeof serviceFormSchema>

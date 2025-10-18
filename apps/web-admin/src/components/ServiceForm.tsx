@@ -19,9 +19,7 @@ import {
 import {
   serviceFormSchema,
   type ServiceFormData,
-  dollarsToCents,
   centsToDollars,
-  minutesToInterval,
   intervalToMinutes,
 } from '@/lib/validation/service'
 import type { Database } from '@chotter/database'
@@ -45,8 +43,8 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
       description: service?.description || '',
       price: service ? centsToDollars(service.base_price) : 0,
       durationMinutes: service ? intervalToMinutes(service.estimated_duration) : 60,
-      requiredSkills: service?.required_skills || [],
-      isActive: service?.is_active ?? true,
+      requiredSkills: service?.required_skills,
+      isActive: service?.is_active,
     },
   })
 
@@ -58,7 +56,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
         description: service.description || '',
         price: centsToDollars(service.base_price),
         durationMinutes: intervalToMinutes(service.estimated_duration),
-        requiredSkills: service.required_skills || [],
+        requiredSkills: service.required_skills,
         isActive: service.is_active,
       })
     }
