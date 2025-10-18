@@ -45,6 +45,12 @@ export function Layout({ children }: LayoutProps) {
             <Link to="/schedule" className="text-sm font-medium transition-colors hover:text-primary">
               Schedule
             </Link>
+            <Link to="/customers" className="text-sm font-medium transition-colors hover:text-primary">
+              Customers
+            </Link>
+            <Link to="/services" className="text-sm font-medium transition-colors hover:text-primary">
+              Services
+            </Link>
           </nav>
 
           {/* User menu */}

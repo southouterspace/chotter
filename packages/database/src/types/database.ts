@@ -1210,6 +1210,49 @@ export interface Database {
           updated_at?: string;
         };
       };
+
+      // Service Types (P2.7)
+      service_types: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          description: string | null;
+          base_price: number;
+          estimated_duration: string;
+          required_skills: string[];
+          is_active: boolean;
+          display_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          description?: string | null;
+          base_price: number;
+          estimated_duration: string;
+          required_skills?: string[];
+          is_active?: boolean;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          description?: string | null;
+          base_price?: number;
+          estimated_duration?: string;
+          required_skills?: string[];
+          is_active?: boolean;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
