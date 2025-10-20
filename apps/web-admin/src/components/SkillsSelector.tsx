@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useServiceTypes } from '@/hooks/useServiceTypes'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
@@ -94,11 +93,6 @@ export function SkillsSelector({ value, onChange, disabled }: SkillsSelectorProp
                 className="cursor-pointer text-sm font-normal"
               >
                 {serviceType.name}
-                {serviceType.category && (
-                  <span className="ml-2 text-xs text-muted-foreground">
-                    ({serviceType.category})
-                  </span>
-                )}
               </Label>
             </div>
           )

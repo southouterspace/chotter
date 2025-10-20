@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
@@ -37,7 +36,7 @@ const DAYS = [
 
 export function TechnicianForm({ technician, onSubmit, onCancel, isSubmitting }: TechnicianFormProps) {
   const form = useForm<TechnicianFormData>({
-    resolver: zodResolver(technicianFormSchema),
+    resolver: zodResolver(technicianFormSchema as any) as any,
     defaultValues: {
       firstName: technician?.firstName || '',
       lastName: technician?.lastName || '',

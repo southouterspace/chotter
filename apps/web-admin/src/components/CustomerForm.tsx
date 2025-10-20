@@ -72,7 +72,7 @@ export function CustomerForm({ open, onOpenChange, customer, onSuccess }: Custom
   const isEditing = !!customer
 
   const form = useForm<CustomerFormData>({
-    resolver: zodResolver(customerSchema),
+    resolver: zodResolver(customerSchema as any) as any,
     defaultValues: {
       first_name: '',
       last_name: '',

@@ -74,7 +74,7 @@ export function AppointmentModal({
   const isEditing = !!appointment
 
   const form = useForm<AppointmentFormData>({
-    resolver: zodResolver(appointmentSchema) as any,
+    resolver: zodResolver(appointmentSchema as any),
     defaultValues: {
       customer_id: '',
       service_id: '',

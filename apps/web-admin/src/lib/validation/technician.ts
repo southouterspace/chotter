@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
-
 export const workScheduleSchema = z.object({
   sunday: z.object({
     isAvailable: z.boolean(),

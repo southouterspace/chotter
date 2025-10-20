@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useTechnicians, type TechnicianFilters } from '@/hooks/useTechnicians'
-import { useServiceTypes } from '@/hooks/useServiceTypes'
 import { Search, Filter, UserCheck, UserX } from 'lucide-react'
 import type { TechnicianData } from '@/hooks/useTechnicians'
 
@@ -34,7 +33,6 @@ export function TechnicianTable({ onSelectTechnician }: TechnicianTableProps) {
   })
 
   const { data: technicians, isLoading, error } = useTechnicians(filters)
-  const { data: serviceTypes } = useServiceTypes()
 
   const handleSearchChange = (value: string) => {
     setFilters(prev => ({ ...prev, search: value }))

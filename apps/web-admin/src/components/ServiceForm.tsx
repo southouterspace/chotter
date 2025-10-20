@@ -37,7 +37,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isSubmitting }: Servi
   const [skillInput, setSkillInput] = useState('')
 
   const form = useForm<ServiceFormData>({
-    resolver: zodResolver(serviceFormSchema),
+    resolver: zodResolver(serviceFormSchema as any) as any,
     defaultValues: {
       name: service?.name || '',
       description: service?.description || '',

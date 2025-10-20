@@ -18,13 +18,13 @@ export const serviceFormSchema = z.object({
 
   // Price in dollars (will be converted to cents for storage)
   price: z
-    .number({ required_error: 'Price is required' })
+    .number()
     .min(0, 'Price must be 0 or greater')
     .max(100000, 'Price must be less than $100,000'),
 
   // Duration in minutes (will be converted to PostgreSQL interval)
   durationMinutes: z
-    .number({ required_error: 'Duration is required' })
+    .number()
     .int('Duration must be a whole number')
     .min(1, 'Duration must be at least 1 minute')
     .max(1440, 'Duration must be less than 24 hours'),

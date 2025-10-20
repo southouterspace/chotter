@@ -26,7 +26,7 @@ const STATUS_OPTIONS = [
 ]
 
 export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersProps) {
-  const { technicians } = useTechnicians()
+  const { data: technicians = [] } = useTechnicians()
   const { categories } = useServices()
 
   const [selectedTechnicians, setSelectedTechnicians] = useState<string[]>(filters.technicianIds || [])
@@ -82,7 +82,7 @@ export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersPro
             <SelectValue placeholder={selectedTechnicians.length > 0 ? `${selectedTechnicians.length} selected` : 'All Technicians'} />
           </SelectTrigger>
           <SelectContent>
-            {technicians.map(tech => (
+            {technicians.map((tech: any) => (
               <div
                 key={tech.id}
                 className="flex items-center px-2 py-1.5 cursor-pointer hover:bg-accent rounded-sm"
@@ -97,7 +97,7 @@ export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersPro
                   onChange={() => handleTechnicianToggle(tech.id)}
                   className="mr-2"
                 />
-                <span className="text-sm">{tech.name}</span>
+                <span className="text-sm">{tech.firstName} {tech.lastName}</span>
               </div>
             ))}
             {technicians.length === 0 && (
@@ -115,7 +115,7 @@ export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersPro
             <SelectValue placeholder={selectedServiceTypes.length > 0 ? `${selectedServiceTypes.length} selected` : 'All Types'} />
           </SelectTrigger>
           <SelectContent>
-            {categories.map(category => (
+            {categories.map((category: any) => (
               <div
                 key={category.value}
                 className="flex items-center px-2 py-1.5 cursor-pointer hover:bg-accent rounded-sm"
@@ -187,10 +187,10 @@ export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersPro
       {hasActiveFilters && (
         <div className="w-full flex flex-wrap gap-2 mt-2">
           {selectedTechnicians.map(techId => {
-            const tech = technicians.find(t => t.id === techId)
+            const tech = technicians.find((t: any) => t.id === techId)
             return tech ? (
               <div key={techId} className="flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-xs">
-                <span>{tech.name}</span>
+                <span>{tech.firstName} {tech.lastName}</span>
                 <button onClick={() => handleTechnicianToggle(techId)} className="hover:bg-primary/20 rounded-full p-0.5">
                   <X className="h-3 w-3" />
                 </button>
@@ -198,7 +198,7 @@ export function CalendarFilters({ filters, onFiltersChange }: CalendarFiltersPro
             ) : null
           })}
           {selectedServiceTypes.map(category => {
-            const cat = categories.find(c => c.value === category)
+            const cat = categories.find((c: any) => c.value === category)
             return cat ? (
               <div key={category} className="flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-xs">
                 <span>{cat.label}</span>
