@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Layout } from '@/components/Layout'
 import { LoginPage } from '@/pages/LoginPage'
+import { SignUpPage } from '@/pages/SignUpPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { SchedulePage } from '@/pages/SchedulePage'
 import { CustomersPage } from '@/pages/CustomersPage'
@@ -12,6 +13,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       <Route
         path="/"
         element={

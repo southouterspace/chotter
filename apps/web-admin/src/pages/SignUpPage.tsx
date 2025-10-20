@@ -7,12 +7,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export function LoginPage() {
-  const { user, signIn } = useAuth()
+export function SignUpPage() {
+  const { user, signUp } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   // Redirect to dashboard if already logged in
   if (user) {
@@ -24,21 +26,57 @@ export function LoginPage() {
     setError('')
     setLoading(true)
 
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      setLoading(false)
+      return
+    }
+
     try {
-      await signIn(email, password)
-      // Don't reset loading here - let the auth state change handle the redirect
+      await signUp(email, password)
+      setSuccess(true)
+      setLoading(false) // Safe to reset here as we're showing success message
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign in')
+      setError(err instanceof Error ? err.message : 'Failed to sign up')
       setLoading(false) // Only reset loading on error
     }
+  }
+
+  if (success) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Check your email</CardTitle>
+            <CardDescription>
+              We've sent you a confirmation email. Please check your inbox and click the
+              confirmation link to complete your registration.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/login">
+              <Button className="w-full">Back to Login</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Admin Login</CardTitle>
-          <CardDescription>Sign in to access the Chotter admin dashboard</CardDescription>
+          <CardTitle>Create Admin Account</CardTitle>
+          <CardDescription>Sign up to access the Chotter admin dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,6 +101,21 @@ export function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                minLength={8}
+              />
+              <p className="text-xs text-muted-foreground">
+                Must be at least 8 characters long
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                disabled={loading}
               />
             </div>
             {error && (
@@ -71,12 +124,12 @@ export function LoginPage() {
               </div>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Creating account...' : 'Sign up'}
             </Button>
             <div className="text-center text-sm text-muted-foreground">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-primary hover:underline">
-                Sign up
+              Already have an account?{' '}
+              <Link to="/login" className="text-primary hover:underline">
+                Sign in
               </Link>
             </div>
           </form>
