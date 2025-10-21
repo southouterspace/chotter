@@ -63,7 +63,7 @@ healthRouter.get('/detailed', async (c) => {
     const client = createSupabaseServerClient();
 
     // Check database connection
-    const { error: dbError, count } = await client
+    const { error: dbError } = await client
       .from('businesses')
       .select('*', { count: 'exact', head: true });
 

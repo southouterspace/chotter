@@ -33,7 +33,7 @@ export const errorHandler: ErrorHandler = (err, c) => {
       {
         error: err.message || 'An error occurred',
       },
-      err.status
+      err.status as 200 | 201 | 204 | 400 | 401 | 403 | 404 | 500
     );
   }
 

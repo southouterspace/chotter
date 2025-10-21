@@ -5,7 +5,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "noEmit": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true
   },
   "include": ["src/**/*"],

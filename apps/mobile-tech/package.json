@@ -6,6 +6,29 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest"
+  },
+  "dependencies": {
+    "expo": "~51.0.0",
+    "expo-router": "~3.5.0",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
+    "@supabase/supabase-js": "^2.39.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "expo-notifications": "~0.28.0",
+    "expo-device": "~6.0.2",
+    "expo-constants": "~16.0.0",
+    "@tanstack/react-query": "^5.17.0",
+    "@tanstack/query-async-storage-persister": "^5.17.0",
+    "@tanstack/react-query-persist-client": "^5.17.0",
+    "@react-native-community/netinfo": "11.3.1",
+    "expo-secure-store": "~13.0.1",
+    "react-native-url-polyfill": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.45",
+    "typescript": "^5.3.3"
   }
 }

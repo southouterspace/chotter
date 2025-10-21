@@ -106,7 +106,7 @@ CREATE TABLE persons (
   timezone TEXT DEFAULT 'America/Los_Angeles', -- IANA timezone
 
   -- Status
-  active BOOLEAN DEFAULT true,
+  is_active BOOLEAN DEFAULT true,
   last_login_at TIMESTAMPTZ,
 
   -- Timestamps
@@ -129,7 +129,7 @@ CREATE INDEX idx_persons_email ON persons(email) WHERE email IS NOT NULL;
 CREATE INDEX idx_persons_phone ON persons(phone) WHERE phone IS NOT NULL;
 CREATE INDEX idx_persons_role ON persons(role);
 CREATE INDEX idx_persons_business_role ON persons(business_id, role) WHERE business_id IS NOT NULL;
-CREATE INDEX idx_persons_active ON persons(active) WHERE active = true;
+CREATE INDEX idx_persons_is_active ON persons(is_active) WHERE is_active = true;
 
 COMMENT ON TABLE persons IS 'Base entity for all human users (customers, technicians, admins)';
 COMMENT ON COLUMN persons.supabase_user_id IS 'Links to Supabase Auth - nullable for customers without accounts';

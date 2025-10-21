@@ -38,7 +38,7 @@ export const requireAuth = createMiddleware<{ Variables: Variables }>(async (c, 
 
     // Add user to context
     c.set('user', user);
-    await next();
+    return await next();
   } catch (error) {
     console.error('Auth middleware error:', error);
     return c.json({ error: 'Authentication failed' }, 401);
