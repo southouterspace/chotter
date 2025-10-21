@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export function SignUpPage() {
   const { user, signUp } = useAuth()
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -41,7 +43,10 @@ export function SignUpPage() {
     }
 
     try {
-      await signUp(email, password)
+      await signUp(email, password, {
+        first_name: firstName,
+        last_name: lastName,
+      })
       setSuccess(true)
       setLoading(false) // Safe to reset here as we're showing success message
     } catch (err) {
@@ -80,6 +85,30 @@ export function SignUpPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="John"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
