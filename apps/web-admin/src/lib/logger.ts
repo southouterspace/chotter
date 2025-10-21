@@ -36,8 +36,14 @@ class Logger {
       level,
       component,
       message,
-      ...(data && { data: this.sanitize(data) }),
-      ...(error && { error: this.formatError(error) }),
+    }
+
+    if (data !== undefined) {
+      entry.data = this.sanitize(data)
+    }
+
+    if (error !== undefined) {
+      entry.error = this.formatError(error)
     }
 
     // Store in history
