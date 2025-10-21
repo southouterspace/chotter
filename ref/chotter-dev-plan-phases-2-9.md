@@ -510,13 +510,13 @@ const subscription = supabase
 
 **Acceptance Criteria:**
 
-- [ ] **MISSING: Dedicated live tracking page/route** - TechnicianMap component exists but not integrated as standalone page
+- [x] **✅ COMPLETED: Dedicated live tracking page/route** - LiveTrackingPage.tsx integrated at `/tracking` route with navigation menu link
 - [x] Map component created (TechnicianMap.tsx) with technician markers
 - [x] Real-time location updates work (useTechnicianLocations.ts with Realtime subscription)
 - [x] Route polylines display correctly (RoutePolyline component in TechnicianMap.tsx)
 - [x] Marker click shows tech info (TechnicianInfoWindow component)
 - [ ] Map performance acceptable with 10+ techs (needs testing)
-- [ ] **NOTE:** RoutesPage is for route management (P2.9), not live tracking. LiveTrackingPage.tsx was created but not integrated into routing.
+- [x] **✅ RESOLVED:** LiveTrackingPage.tsx integrated into apps/web-admin/src/routes.tsx at `/tracking` path with radar icon in navigation menu.
 
 **Dependencies:** P2.7
 
@@ -571,9 +571,9 @@ app.post('/api/routes/:routeId/optimize', async (c) => {
 - [x] Route list shows all today's routes (RouteList.tsx)
 - [x] Can reorder appointments via drag-and-drop (RouteReorderableList.tsx with @dnd-kit)
 - [x] Manual reorder saves to database (implemented in RouteReorderableList)
-- [ ] **MISSING: "Optimize Route" button** - useRouteOptimization.ts hook exists but not integrated in RouteDetail.tsx
-- [ ] **MISSING: API endpoint POST /api/routes/:routeId/optimize** - Backend optimization not implemented
-- [ ] **MISSING: Shows distance/time savings** - Metrics display not implemented
+- [x] **✅ COMPLETED: "Optimize Route" button** - Implemented in RouteDetail.tsx (lines 100-116) with useRouteOptimization.ts hook
+- [x] **✅ COMPLETED: API endpoint POST /api/routes/:routeId/optimize** - Implemented in apps/api/src/routes/routes.ts using nearest-neighbor algorithm
+- [x] **✅ COMPLETED: Shows distance/time savings** - Metrics display implemented in RouteDetail.tsx (lines 172-204) with green success banner
 
 **Dependencies:** P2.8
 

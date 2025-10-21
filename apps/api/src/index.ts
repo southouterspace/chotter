@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { errorHandler } from './middleware/error';
 import { healthRouter } from './routes/health';
+import { routesRouter } from './routes/routes';
 import { env } from './lib/env';
 
 // Initialize Hono app
@@ -23,6 +24,7 @@ app.use('*', logger());
 
 // Routes
 app.route('/health', healthRouter);
+app.route('/routes', routesRouter);
 
 // Future routes (placeholders for Phase 2-9)
 // app.route('/webhooks', webhooksRouter);
@@ -62,8 +64,9 @@ CORS:        ${env.CORS_ORIGINS}
 Database:    ${env.SUPABASE_URL}
 
 Endpoints:
-  - GET  /health          Health check
-  - GET  /health/detailed Detailed health check
+  - GET  /health                  Health check
+  - GET  /health/detailed         Detailed health check
+  - POST /routes/:routeId/optimize Route optimization
 
 Ready to accept requests!
 `);
