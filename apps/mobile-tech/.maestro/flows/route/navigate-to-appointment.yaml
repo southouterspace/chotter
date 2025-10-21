@@ -1,0 +1,8 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First appointment
+    index: 0
+- assertVisible: "Customer Information"
+- takeScreenshot: "appointment-detail"

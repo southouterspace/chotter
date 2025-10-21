@@ -1,0 +1,14 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First in-progress appointment
+    index: 0
+
+- tapOn: "Complete Job"
+- tapOn: "Complete" # Confirm
+- assertVisible:
+    text: ".*completed.*"
+    regex: true
+
+- takeScreenshot: "job-completed"

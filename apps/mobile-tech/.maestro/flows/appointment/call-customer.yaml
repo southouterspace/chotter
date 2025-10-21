@@ -1,0 +1,17 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First appointment
+    index: 0
+
+# Tap call customer button
+- tapOn: "Call Customer"
+
+# Verify phone dialer opens (platform specific)
+- assertVisible:
+    text: ".*\\d{3}.*\\d{3}.*\\d{4}.*"
+    regex: true
+
+- takeScreenshot: "call-initiated"
+- back

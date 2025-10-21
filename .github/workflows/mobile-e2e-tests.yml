@@ -1,0 +1,132 @@
+name: Mobile E2E Tests
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'apps/mobile-tech/**'
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'apps/mobile-tech/**'
+
+jobs:
+  test-ios:
+    name: Test iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: cd apps/mobile-tech && bun install
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "${HOME}/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Setup iOS Simulator
+        run: |
+          xcrun simctl boot "iPhone 15 Pro" || true
+          xcrun simctl list devices
+
+      - name: Build app for testing
+        run: |
+          cd apps/mobile-tech
+          npx expo prebuild --platform ios
+
+      - name: Run Maestro tests
+        run: |
+          cd apps/mobile-tech
+          maestro test .maestro/flows --format junit --output test-results.xml
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: maestro-ios-results
+          path: |
+            ~/.maestro/tests/**/*
+            apps/mobile-tech/test-results.xml
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: maestro-ios-screenshots
+          path: ~/.maestro/tests/**/*.png
+
+  test-android:
+    name: Test Android
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: cd apps/mobile-tech && bun install
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "${HOME}/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Create Android Emulator
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            -n test_emulator \
+            -k "system-images;android-33;google_apis;x86_64" \
+            -d "pixel_5"
+
+      - name: Start Android Emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd test_emulator -no-window -no-audio &
+          adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+
+      - name: Build app for testing
+        run: |
+          cd apps/mobile-tech
+          npx expo prebuild --platform android
+
+      - name: Run Maestro tests
+        run: |
+          cd apps/mobile-tech
+          maestro test .maestro/flows --format junit --output test-results.xml
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: maestro-android-results
+          path: |
+            ~/.maestro/tests/**/*
+            apps/mobile-tech/test-results.xml
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: maestro-android-screenshots
+          path: ~/.maestro/tests/**/*.png

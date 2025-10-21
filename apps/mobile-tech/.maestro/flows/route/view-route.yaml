@@ -1,0 +1,12 @@
+appId: com.chotter.tech
+---
+- launchApp
+- assertVisible: "Today's Route"
+- assertVisible: "appointments"
+- scroll
+- takeScreenshot: "route-view"
+
+# Verify route summary exists
+- assertVisible:
+    text: "Total.*"
+    regex: true

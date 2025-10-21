@@ -1,0 +1,16 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First appointment
+    index: 0
+
+# Verify customer info displayed
+- assertVisible: "Customer Information"
+- assertVisible: "Service Details"
+
+# Verify action buttons exist
+- assertVisible: "Call Customer"
+- assertVisible: "Navigate"
+
+- takeScreenshot: "appointment-details"

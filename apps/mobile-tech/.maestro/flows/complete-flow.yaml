@@ -1,0 +1,24 @@
+appId: com.chotter.tech
+---
+# Complete user journey test
+
+# 1. Login
+- runFlow: auth/login.yaml
+
+# 2. View route
+- runFlow: route/view-route.yaml
+
+# 3. View appointment
+- runFlow: appointment/view-details.yaml
+
+# 4. Check in
+- runFlow: checkin/check-in.yaml
+
+# 5. Complete job
+- runFlow: checkin/complete-job.yaml
+
+# 6. View profile
+- runFlow: profile/view-stats.yaml
+
+# 7. Logout
+- runFlow: auth/logout.yaml

@@ -1,0 +1,15 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn: "Profile"
+- scroll
+
+# Toggle dark mode
+- tapOn:
+    id: "dark-mode-switch"
+- takeScreenshot: "dark-mode-enabled"
+
+# Toggle back
+- tapOn:
+    id: "dark-mode-switch"
+- takeScreenshot: "dark-mode-disabled"

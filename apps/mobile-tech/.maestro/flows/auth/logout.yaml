@@ -1,0 +1,9 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn: "Profile"
+- scroll
+- tapOn: "Logout"
+- tapOn: "Logout" # Confirm
+- assertVisible: "Login"
+- takeScreenshot: "logged-out"

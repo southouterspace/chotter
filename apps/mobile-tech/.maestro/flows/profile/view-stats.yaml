@@ -1,0 +1,18 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn: "Profile"
+
+# Verify profile info
+- assertVisible: "Technician"
+- assertVisible: "Today's Performance"
+
+# Verify stats
+- assertVisible:
+    text: "\\d+ Appointments"
+    regex: true
+- assertVisible:
+    text: "\\d+% On-Time"
+    regex: true
+
+- takeScreenshot: "profile-stats"

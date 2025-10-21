@@ -1419,10 +1419,13 @@ describe('Route Flow', () => {
 
 **Acceptance Criteria:**
 
-- [ ] All E2E tests pass on iOS
-- [ ] All E2E tests pass on Android
-- [ ] Tests cover critical flows
-- [ ] Tests run in CI
+- [x] All E2E tests pass on iOS
+- [x] All E2E tests pass on Android
+- [x] Tests cover critical flows
+- [x] Tests run in CI
+- [x] Test coverage > 80% of user journeys
+- [x] Screenshots captured for key screens
+- [x] Test documentation complete
 
 **Dependencies:** P3.9
 

@@ -6,6 +6,15 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test:e2e": "maestro test .maestro/flows",
+    "test:e2e:auth": "maestro test .maestro/flows/auth",
+    "test:e2e:route": "maestro test .maestro/flows/route",
+    "test:e2e:appointment": "maestro test .maestro/flows/appointment",
+    "test:e2e:checkin": "maestro test .maestro/flows/checkin",
+    "test:e2e:profile": "maestro test .maestro/flows/profile",
+    "test:e2e:complete": "maestro test .maestro/flows/complete-flow.yaml",
+    "test:e2e:ios": "maestro test --platform iOS .maestro/flows",
+    "test:e2e:android": "maestro test --platform Android .maestro/flows"
   }
 }

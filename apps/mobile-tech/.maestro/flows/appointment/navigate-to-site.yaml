@@ -1,0 +1,17 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First appointment
+    index: 0
+
+# Tap navigate button
+- tapOn: "Navigate"
+
+# Verify maps app opens or navigation starts
+- assertVisible:
+    text: ".*(Maps|Navigate|Directions).*"
+    regex: true
+
+- takeScreenshot: "navigation-started"
+- back

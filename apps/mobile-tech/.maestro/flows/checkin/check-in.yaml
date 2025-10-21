@@ -1,0 +1,18 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn:
+    text: ".*" # First appointment
+    index: 0
+
+# Mock location to be at job site
+- setLocation:
+    latitude: 37.7749
+    longitude: -122.4194
+
+- tapOn: "Check In"
+- assertVisible:
+    text: ".*in progress.*"
+    regex: true
+
+- takeScreenshot: "checked-in"

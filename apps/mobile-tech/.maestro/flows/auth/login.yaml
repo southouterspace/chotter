@@ -1,0 +1,10 @@
+appId: com.chotter.tech
+---
+- launchApp
+- tapOn: "Email"
+- inputText: "${TEST_EMAIL}"
+- tapOn: "Password"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Login"
+- assertVisible: "Today's Route"
+- takeScreenshot: "logged-in-home"
