@@ -1168,12 +1168,12 @@ const verifyLocation = async (appointmentLocation: Point) => {
 
 **Acceptance Criteria:**
 
-- [ ] Check-in requires location proximity
-- [ ] Check-in updates status to "in_progress"
-- [ ] Check-in location recorded
-- [ ] Complete job updates status to "completed"
-- [ ] Check-out location recorded
-- [ ] Times recorded accurately
+- [x] Check-in requires location proximity
+- [x] Check-in updates status to "in_progress"
+- [x] Check-in location recorded
+- [x] Complete job updates status to "completed"
+- [x] Check-out location recorded
+- [x] Times recorded accurately
 
 **Dependencies:** P3.5
 
