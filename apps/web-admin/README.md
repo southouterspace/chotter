@@ -1,4 +1,15 @@
-# React + TypeScript + Vite
+# Chotter Admin Dashboard
+
+Admin dashboard for managing field service operations built with React + TypeScript + Vite.
+
+## Environment Variables
+
+Required environment variables for deployment:
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous API key
+- `VITE_GOOGLE_MAPS_API_KEY` - Google Maps API key for location features
+
+## Development
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
