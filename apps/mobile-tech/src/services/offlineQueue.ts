@@ -123,7 +123,7 @@ export async function syncQueue(): Promise<{ success: number; failed: number }> 
       } else {
         console.error('Max retry count exceeded for update:', update.id);
         // Optionally store failed updates separately for manual review
-        await storeFailed Update(updatedUpdate);
+        await storeFailedUpdate(updatedUpdate);
       }
     }
   }

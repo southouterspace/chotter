@@ -17,7 +17,7 @@ export default function HomeScreen() {
   });
 
   // Initialize offline sync
-  const { queueStatus, hasPendingUpdates } = useOfflineSync();
+  const { queueStatus } = useOfflineSync();
 
   return (
     <View style={styles.container}>

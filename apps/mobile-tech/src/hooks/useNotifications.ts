@@ -12,7 +12,6 @@ import {
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
   storeNotification,
-  updateBadgeCount,
   getBadgeCount,
 } from '../services/notifications';
 import { NotificationData, NotificationType } from '../types/notifications';

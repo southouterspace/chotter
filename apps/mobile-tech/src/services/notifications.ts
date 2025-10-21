@@ -20,7 +20,7 @@ const MAX_STORED_NOTIFICATIONS = 50;
  */
 export function configureNotificationHandler() {
   Notifications.setNotificationHandler({
-    handleNotification: async (notification) => {
+    handleNotification: async () => {
       // Always show notification, even in foreground
       return {
         shouldShowAlert: true,
