@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "Chotter Tech",
+    "slug": "chotter-tech",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chotter.tech",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Chotter needs your location to track your route and automatically check you in at job sites.",
+        "NSLocationWhenInUseUsageDescription": "Chotter needs your location to show your current position and navigate to appointments.",
+        "NSCameraUsageDescription": "Chotter needs camera access to take photos of completed work.",
+        "NSPhotoLibraryUsageDescription": "Chotter needs photo library access to attach photos to work orders."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.chotter.tech",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Chotter to use your location to track your route and check you in automatically."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffffff"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
