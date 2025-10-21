@@ -60,5 +60,8 @@
     "scheduling"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "expo": "^54.0.15"
+  }
 }

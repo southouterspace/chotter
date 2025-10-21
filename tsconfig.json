@@ -1,30 +1,23 @@
 {
   "compilerOptions": {
-    // Language and Environment
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "jsx": "react-jsx",
-
-    // Modules
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-
-    // Emit
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
     "removeComments": true,
     "noEmit": true,
-
-    // Interop Constraints
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-
-    // Type Checking
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -38,31 +31,65 @@
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-
-    // Completeness
     "skipLibCheck": true,
-
-    // Path Aliases
     "baseUrl": ".",
     "paths": {
-      "@chotter/database": ["./packages/database/src"],
-      "@chotter/database/*": ["./packages/database/src/*"],
-      "@chotter/ui": ["./packages/ui/src"],
-      "@chotter/ui/*": ["./packages/ui/src/*"],
-      "@chotter/utils": ["./packages/utils/src"],
-      "@chotter/utils/*": ["./packages/utils/src/*"]
+      "@chotter/database": [
+        "./packages/database/src"
+      ],
+      "@chotter/database/*": [
+        "./packages/database/src/*"
+      ],
+      "@chotter/ui": [
+        "./packages/ui/src"
+      ],
+      "@chotter/ui/*": [
+        "./packages/ui/src/*"
+      ],
+      "@chotter/utils": [
+        "./packages/utils/src"
+      ],
+      "@chotter/utils/*": [
+        "./packages/utils/src/*"
+      ]
     }
   },
   "references": [
-    { "path": "./apps/web-admin" },
-    { "path": "./apps/web-customer" },
-    { "path": "./apps/mobile-tech" },
-    { "path": "./apps/api" },
-    { "path": "./packages/database" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/utils" },
-    { "path": "./workers/route-optimizer" },
-    { "path": "./workers/notifications" }
+    {
+      "path": "./apps/web-admin"
+    },
+    {
+      "path": "./apps/web-customer"
+    },
+    {
+      "path": "./apps/mobile-tech"
+    },
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./packages/database"
+    },
+    {
+      "path": "./packages/ui"
+    },
+    {
+      "path": "./packages/utils"
+    },
+    {
+      "path": "./workers/route-optimizer"
+    },
+    {
+      "path": "./workers/notifications"
+    }
   ],
-  "exclude": ["node_modules", "dist", "build", ".next", ".expo", ".supabase"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".expo",
+    ".supabase"
+  ],
+  "extends": "expo/tsconfig.base"
 }

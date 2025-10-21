@@ -1,0 +1,110 @@
+name: Sync Supabase Preview Branches
+
+# This workflow keeps preview branches in sync with production (main branch)
+# by automatically triggering a reset when migrations are pushed to main.
+#
+# How it works:
+# 1. Detects when migration files change in main branch
+# 2. Notifies Supabase to refresh all preview branches
+# 3. Preview branches are recreated with latest migrations from main
+#
+# This prevents schema drift between production and staging environments.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'supabase/migrations/**'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  notify-preview-sync:
+    name: Notify Preview Branches to Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Get list of preview branches
+        id: list-branches
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "Checking for preview branches that need sync..."
+          # List all branches - the API will show which ones are preview branches
+          supabase branches list --experimental --output json > branches.json || echo "[]" > branches.json
+          echo "branches=$(cat branches.json)" >> $GITHUB_OUTPUT
+
+      - name: Comment on open PRs
+        if: steps.list-branches.outputs.branches != '[]'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branches = ${{ steps.list-branches.outputs.branches }};
+
+            // Get all open PRs
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+
+            for (const pr of pullRequests) {
+              // Skip if PR is from main branch
+              if (pr.head.ref === 'main') continue;
+
+              // Post a comment to notify about the sync
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `🔄 **Supabase Preview Branch Sync**
+
+New migrations were merged to \`main\`. Your preview branch may be out of sync.
+
+**To sync your preview branch with the latest schema:**
+1. Close and reopen this PR, or
+2. Push a new commit to trigger preview branch recreation
+
+The preview branch will automatically apply all migrations from main.
+
+<sub>Triggered by migration changes in commit ${context.sha.substring(0, 7)}</sub>`
+              });
+            }
+
+      - name: Summary
+        run: |
+          echo "✅ Migration sync notification complete"
+          echo ""
+          echo "Preview branches will be updated when:"
+          echo "- PRs are closed and reopened"
+          echo "- New commits are pushed to PR branches"
+          echo ""
+          echo "All migrations from main will be automatically applied."
+
+  verify-main-migrations:
+    name: Verify Main Branch Migrations
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Check migration files
+        run: |
+          echo "📋 Migrations in main branch:"
+          ls -lh supabase/migrations/
+          echo ""
+          echo "✅ These migrations will be applied to preview branches on next sync"

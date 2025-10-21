@@ -87,12 +87,14 @@ Set up React + Vite app with routing, authentication, and layout structure.
 
 **Acceptance Criteria:**
 
-- [ ] App runs with `bun run dev`
-- [ ] Can log in with Supabase Auth
-- [ ] Protected routes redirect to login
-- [ ] Layout renders with sidebar navigation
-- [ ] Tailwind CSS working
-- [ ] Type-safe routing
+- [x] App runs with `bun run dev`
+- [x] Can log in with Supabase Auth
+- [x] Protected routes redirect to login
+- [x] Layout renders with sidebar navigation
+- [x] Tailwind CSS working
+- [x] Type-safe routing
+- [x] shadcn/ui components integrated
+- [x] Vercel project created and linked
 
 **Dependencies:** P1.9 (UI components), P1.7 (database types), P1.8 (auth)
 
@@ -151,11 +153,15 @@ const { data: technicians } = await supabase
 
 **Acceptance Criteria:**
 
-- [ ] Stats widgets display correct counts
-- [ ] Live map shows technician locations
-- [ ] Activity feed shows recent updates
-- [ ] Real-time updates via Supabase Realtime
-- [ ] Responsive design
+- [x] Stats widgets display correct counts
+- [x] Live map shows technician locations
+- [x] Activity feed shows recent updates
+- [x] Real-time updates via Supabase Realtime
+- [x] Responsive design
+- [x] Google Maps integration with @vis.gl/react-google-maps
+- [x] Color-coded technician markers
+- [x] Interactive info windows
+- [x] Loading states with skeletons
 
 **Dependencies:** P2.1
 
@@ -196,11 +202,11 @@ Build calendar view for viewing and managing appointments across days/weeks.
 
 **Acceptance Criteria:**
 
-- [ ] Calendar displays appointments
-- [ ] Can switch between day/week/month views
-- [ ] Appointments color-coded by status
-- [ ] Filters work correctly
-- [ ] Click appointment to view details
+- [x] Calendar displays appointments
+- [x] Can switch between day/week/month views
+- [x] Appointments color-coded by status
+- [x] Filters work correctly
+- [x] Click appointment to view details
 
 **Dependencies:** P2.2
 
@@ -260,12 +266,12 @@ export const appointmentSchema = z.object({
 
 **Acceptance Criteria:**
 
-- [ ] Can create new appointment
-- [ ] Can edit existing appointment
-- [ ] Form validation works
-- [ ] Customer search autocomplete works
-- [ ] Technician filtered by service skills
-- [ ] Appointment appears on calendar after creation
+- [x] Can create new appointment
+- [x] Can edit existing appointment
+- [x] Form validation works
+- [x] Customer search autocomplete works
+- [x] Technician filtered by service skills
+- [x] Appointment appears on calendar after creation
 
 **Dependencies:** P2.3
 
@@ -326,13 +332,13 @@ app.post('/api/geocode', async (c) => {
 
 **Acceptance Criteria:**
 
-- [ ] Customer list displays all customers
-- [ ] Search works (name, phone, email)
-- [ ] Can create new customer
-- [ ] Address geocodes to coordinates
-- [ ] Can edit customer
-- [ ] Can view customer appointment history
-- [ ] Pagination works
+- [x] Customer list displays all customers
+- [x] Search works (name, phone, email)
+- [x] Can create new customer
+- [x] Address geocodes to coordinates
+- [x] Can edit customer
+- [x] Can view customer appointment history
+- [x] Pagination works
 
 **Dependencies:** P2.4
 
@@ -389,12 +395,12 @@ interface WorkingHours {
 
 **Acceptance Criteria:**
 
-- [ ] Technician list displays all techs
-- [ ] Can create new technician
-- [ ] Skills saved as JSONB array
-- [ ] Certifications saved as JSONB array
-- [ ] Working hours editor saves schedule
-- [ ] Can view technician performance metrics
+- [x] Technician list displays all techs
+- [x] Can create new technician
+- [x] Skills saved as array in technician_tags table
+- [ ] Certifications saved as array in technician_tags table (not implemented)
+- [x] Working hours editor saves schedule to technician_availability table
+- [ ] Can view technician performance metrics (not implemented)
 
 **Dependencies:** P2.5
 
@@ -437,11 +443,11 @@ Build service type management page for creating and configuring bookable service
 
 **Acceptance Criteria:**
 
-- [ ] Service list displays all services
-- [ ] Can create new service with pricing
-- [ ] Required skills multi-select works
-- [ ] Can reorder services via drag-and-drop
-- [ ] Active/inactive toggle works
+- [x] Service list displays all services
+- [x] Can create new service with pricing
+- [x] Required skills multi-select works
+- [ ] Can reorder services via drag-and-drop (not implemented)
+- [x] Active/inactive toggle works
 
 **Dependencies:** P2.6
 
@@ -504,11 +510,13 @@ const subscription = supabase
 
 **Acceptance Criteria:**
 
-- [ ] Map displays all active technicians
-- [ ] Real-time location updates work
-- [ ] Route polylines display correctly
-- [ ] Marker click shows tech info
-- [ ] Map performance acceptable with 10+ techs
+- [ ] **MISSING: Dedicated live tracking page/route** - TechnicianMap component exists but not integrated as standalone page
+- [x] Map component created (TechnicianMap.tsx) with technician markers
+- [x] Real-time location updates work (useTechnicianLocations.ts with Realtime subscription)
+- [x] Route polylines display correctly (RoutePolyline component in TechnicianMap.tsx)
+- [x] Marker click shows tech info (TechnicianInfoWindow component)
+- [ ] Map performance acceptable with 10+ techs (needs testing)
+- [ ] **NOTE:** RoutesPage is for route management (P2.9), not live tracking. LiveTrackingPage.tsx was created but not integrated into routing.
 
 **Dependencies:** P2.7
 
@@ -560,11 +568,12 @@ app.post('/api/routes/:routeId/optimize', async (c) => {
 
 **Acceptance Criteria:**
 
-- [ ] Route list shows all today's routes
-- [ ] Can reorder appointments via drag-and-drop
-- [ ] Manual reorder saves to database
-- [ ] "Optimize Route" triggers optimization
-- [ ] Shows distance/time savings
+- [x] Route list shows all today's routes (RouteList.tsx)
+- [x] Can reorder appointments via drag-and-drop (RouteReorderableList.tsx with @dnd-kit)
+- [x] Manual reorder saves to database (implemented in RouteReorderableList)
+- [ ] **MISSING: "Optimize Route" button** - useRouteOptimization.ts hook exists but not integrated in RouteDetail.tsx
+- [ ] **MISSING: API endpoint POST /api/routes/:routeId/optimize** - Backend optimization not implemented
+- [ ] **MISSING: Shows distance/time savings** - Metrics display not implemented
 
 **Dependencies:** P2.8
 
@@ -605,10 +614,10 @@ Build settings page for business information, operating hours, and user manageme
 
 **Acceptance Criteria:**
 
-- [ ] Business info editable and saves
-- [ ] Operating hours editor works
-- [ ] Can invite new admin users
-- [ ] Can view all users with roles
+- [x] Business info editable and saves (BusinessInfoForm.tsx implemented)
+- [x] Operating hours editor works (OperatingHoursEditor.tsx implemented)
+- [x] Can invite new admin users (UserManagement.tsx with invite dialog + useInviteAdmin hook)
+- [x] Can view all users with roles (UserManagement.tsx displays users with role badges)
 
 **Dependencies:** P2.9
 
