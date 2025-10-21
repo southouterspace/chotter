@@ -3,7 +3,7 @@
  */
 
 import {
-  format as dateFnsFormat,
+  format,
   parseISO,
   addDays,
   addMinutes,
