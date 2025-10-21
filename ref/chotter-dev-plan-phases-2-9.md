@@ -1168,12 +1168,12 @@ const verifyLocation = async (appointmentLocation: Point) => {
 
 **Acceptance Criteria:**
 
-- [ ] Check-in requires location proximity
-- [ ] Check-in updates status to "in_progress"
-- [ ] Check-in location recorded
-- [ ] Complete job updates status to "completed"
-- [ ] Check-out location recorded
-- [ ] Times recorded accurately
+- [x] Check-in requires location proximity
+- [x] Check-in updates status to "in_progress"
+- [x] Check-in location recorded
+- [x] Complete job updates status to "completed"
+- [x] Check-out location recorded
+- [x] Times recorded accurately
 
 **Dependencies:** P3.5
 
@@ -1244,11 +1244,13 @@ export async function registerForPushNotifications() {
 
 **Acceptance Criteria:**
 
-- [ ] Notifications requested on first launch
-- [ ] Device token saved to database
-- [ ] Notifications received when app in background
-- [ ] Notifications displayed when app in foreground
-- [ ] Tapping notification opens relevant screen
+- [x] Notifications requested on first launch
+- [x] Device token saved to database
+- [x] Notifications received when app in background
+- [x] Notifications displayed when app in foreground
+- [x] Tapping notification opens relevant screen
+- [x] Settings toggle for notifications
+- [x] Android notification channels configured
 
 **Dependencies:** P3.6
 
@@ -1310,11 +1312,13 @@ export async function syncQueue() {
 
 **Acceptance Criteria:**
 
-- [ ] Can view appointments offline
-- [ ] Status updates queued when offline
-- [ ] Queued updates sync when online
-- [ ] Offline indicator displays
-- [ ] No crashes when offline
+- [x] Can view appointments offline
+- [x] Status updates queued when offline
+- [x] Queued updates sync when online
+- [x] Offline indicator displays
+- [x] No crashes when offline
+- [x] Data persists between app restarts
+- [x] Network state changes handled gracefully
 
 **Dependencies:** P3.7
 
