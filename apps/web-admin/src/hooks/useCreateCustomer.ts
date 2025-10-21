@@ -12,6 +12,19 @@ export function useCreateCustomer() {
 
   return useMutation({
     mutationFn: async (data: CustomerFormData) => {
+      // Prepare the service address with coordinates
+      const serviceAddress: any = {
+        street: data.service_address.street,
+        city: data.service_address.city,
+        state: data.service_address.state,
+        zip: data.service_address.zip,
+      }
+
+      // Include coordinates if they exist
+      if (data.service_address.latitude !== undefined && data.service_address.longitude !== undefined) {
+        serviceAddress.coordinates = [data.service_address.longitude, data.service_address.latitude]
+      }
+
       // Prepare the customer data
       const customerData: CustomerInsert = {
         business_id: BUSINESS_ID,
@@ -23,12 +36,7 @@ export function useCreateCustomer() {
         status: data.status,
         source: data.source || null,
         notes: data.notes || null,
-        service_address: {
-          street: data.service_address.street,
-          city: data.service_address.city,
-          state: data.service_address.state,
-          zip: data.service_address.zip,
-        },
+        service_address: serviceAddress,
         billing_address: data.billing_address || null,
       }
 

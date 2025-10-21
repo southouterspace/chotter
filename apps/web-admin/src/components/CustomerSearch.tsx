@@ -29,11 +29,12 @@ export function CustomerSearch({ value, onValueChange, disabled }: CustomerSearc
   const [search, setSearch] = useState('')
 
   // Fetch customers with search filter
-  const { data: customers = [], isLoading } = useCustomers({ search })
+  const { data: customersResponse, isLoading } = useCustomers({ search })
+  const customers = customersResponse?.data || []
 
   // Find selected customer
   const selectedCustomer = useMemo(() => {
-    return customers.find((customer) => customer.id === value)
+    return customers.find((customer: CustomerListItem) => customer.id === value)
   }, [customers, value])
 
   // Format customer display
@@ -82,7 +83,7 @@ export function CustomerSearch({ value, onValueChange, disabled }: CustomerSearc
               {isLoading ? 'Loading customers...' : 'No customers found.'}
             </CommandEmpty>
             <CommandGroup>
-              {customers.map((customer) => (
+              {customers.map((customer: CustomerListItem) => (
                 <CommandItem
                   key={customer.id}
                   value={customer.id}

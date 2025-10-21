@@ -27,22 +27,30 @@ interface CustomerTableProps {
 }
 
 export function CustomerTable({ onCustomerClick, onCreateClick }: CustomerTableProps) {
-  const [filters, setFilters] = useState<CustomerFilters>({})
+  const [filters, setFilters] = useState<CustomerFilters>({ page: 1, pageSize: 20 })
   const [searchInput, setSearchInput] = useState('')
 
-  const { data: customers, isLoading, error } = useCustomers(filters)
+  const { data: customersResponse, isLoading, error } = useCustomers(filters)
+  const customers = customersResponse?.data || []
+  const totalCount = customersResponse?.count || 0
+  const currentPage = customersResponse?.page || 1
+  const totalPages = customersResponse?.totalPages || 1
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setFilters((prev) => ({ ...prev, search: searchInput }))
+    setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }))
   }
 
   const handleStatusChange = (value: string) => {
     if (value === 'all') {
-      setFilters((prev) => ({ ...prev, status: undefined }))
+      setFilters((prev) => ({ ...prev, status: undefined, page: 1 }))
     } else {
-      setFilters((prev) => ({ ...prev, status: value as 'active' | 'inactive' }))
+      setFilters((prev) => ({ ...prev, status: value as 'active' | 'inactive', page: 1 }))
     }
+  }
+
+  const handlePageChange = (newPage: number) => {
+    setFilters((prev) => ({ ...prev, page: newPage }))
   }
 
   const formatAddress = (serviceAddress: any) => {
@@ -166,7 +174,7 @@ export function CustomerTable({ onCustomerClick, onCreateClick }: CustomerTableP
                         variant="link"
                         onClick={() => {
                           setSearchInput('')
-                          setFilters({})
+                          setFilters({ page: 1, pageSize: 20 })
                         }}
                       >
                         Clear filters
@@ -180,10 +188,38 @@ export function CustomerTable({ onCustomerClick, onCreateClick }: CustomerTableP
         </Table>
       </div>
 
-      {/* Results count */}
+      {/* Pagination */}
       {customers && customers.length > 0 && (
-        <div className="text-sm text-muted-foreground">
-          Showing {customers.length} customer{customers.length !== 1 ? 's' : ''}
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * (filters.pageSize || 20) + 1} to{' '}
+            {Math.min(currentPage * (filters.pageSize || 20), totalCount)} of {totalCount} customer
+            {totalCount !== 1 ? 's' : ''}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              <div className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -8,6 +8,8 @@ import { SchedulePage } from '@/pages/SchedulePage'
 import { CustomersPage } from '@/pages/CustomersPage'
 import { TechniciansPage } from '@/pages/TechniciansPage'
 import { ServicesPage } from '@/pages/ServicesPage'
+import { RoutesPage } from '@/pages/RoutesPage'
+import { SettingsPage } from '@/pages/SettingsPage'
 
 export function AppRoutes() {
   return (
@@ -60,6 +62,26 @@ export function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <ServicesPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/routes"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <RoutesPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <SettingsPage />
             </Layout>
           </ProtectedRoute>
         }

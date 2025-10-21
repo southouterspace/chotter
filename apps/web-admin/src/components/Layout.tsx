@@ -45,6 +45,9 @@ export function Layout({ children }: LayoutProps) {
             <Link to="/schedule" className="text-sm font-medium transition-colors hover:text-primary">
               Schedule
             </Link>
+            <Link to="/routes" className="text-sm font-medium transition-colors hover:text-primary">
+              Routes
+            </Link>
             <Link to="/customers" className="text-sm font-medium transition-colors hover:text-primary">
               Customers
             </Link>
@@ -70,6 +73,9 @@ export function Layout({ children }: LayoutProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/settings">Settings</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
