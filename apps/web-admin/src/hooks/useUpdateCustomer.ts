@@ -43,6 +43,14 @@ export function useUpdateCustomer() {
         billing_address: data.billing_address || null,
       }
 
+      // Add PostGIS location if coordinates are available
+      if (data.service_address.latitude !== undefined && data.service_address.longitude !== undefined) {
+        // PostGIS POINT format: 'POINT(longitude latitude)'
+        const locationWKT = `POINT(${data.service_address.longitude} ${data.service_address.latitude})`
+        ;(updateData as any).location = locationWKT
+        ;(updateData as any).location_verified = true
+      }
+
       const { data: customer, error } = await supabase
         .from('customers')
         .update(updateData)

@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { SkillsSelector } from '@/components/SkillsSelector'
+import { CertificationsSelector } from '@/components/CertificationsSelector'
 import { technicianFormSchema, defaultWorkSchedule, type TechnicianFormData } from '@/lib/validation/technician'
 import type { TechnicianData } from '@/hooks/useTechnicians'
 
@@ -43,6 +44,7 @@ export function TechnicianForm({ technician, onSubmit, onCancel, isSubmitting }:
       email: technician?.email || '',
       phone: technician?.phone || '',
       skills: technician?.skills || [],
+      certifications: technician?.certifications || [],
       hourlyRate: technician?.hourlyRate || undefined,
       notes: technician?.notes || '',
       isActive: technician?.isActive ?? true,
@@ -59,6 +61,7 @@ export function TechnicianForm({ technician, onSubmit, onCancel, isSubmitting }:
         email: technician.email,
         phone: technician.phone || '',
         skills: technician.skills,
+        certifications: technician.certifications || [],
         hourlyRate: technician.hourlyRate || undefined,
         notes: technician.notes || '',
         isActive: technician.isActive,
@@ -167,6 +170,23 @@ export function TechnicianForm({ technician, onSubmit, onCancel, isSubmitting }:
               <FormItem>
                 <FormControl>
                   <SkillsSelector value={field.value} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Certifications */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Certifications</h3>
+          <FormField
+            control={form.control}
+            name="certifications"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <CertificationsSelector value={field.value || []} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

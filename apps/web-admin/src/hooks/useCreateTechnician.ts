@@ -30,23 +30,44 @@ async function createTechnician(data: CreateTechnicianParams) {
   if (personError) throw personError
   if (!person) throw new Error('Failed to create technician')
 
-  // 2. Create skills
+  // 2. Create skills and certifications
+  const tags = []
+
+  // Add skills
   if (data.skills.length > 0) {
-    const skills = data.skills.map(skill => ({
+    tags.push(...data.skills.map(skill => ({
       business_id: BUSINESS_ID,
       person_id: person.id,
       tag_type: 'skill' as const,
       name: skill,
-    }))
+      tag_value: null,
+    })))
+  }
 
-    const { error: skillsError } = await supabase
+  // Add certifications
+  if (data.certifications && data.certifications.length > 0) {
+    tags.push(...data.certifications.map(cert => ({
+      business_id: BUSINESS_ID,
+      person_id: person.id,
+      tag_type: 'certification' as const,
+      name: cert.name,
+      tag_value: {
+        issue_date: cert.issueDate,
+        expiry_date: cert.expiryDate || null,
+        number: cert.certificationNumber || null,
+      },
+    })))
+  }
+
+  if (tags.length > 0) {
+    const { error: tagsError } = await supabase
       .from('technician_tags')
-      .insert(skills)
+      .insert(tags)
 
-    if (skillsError) {
+    if (tagsError) {
       // Rollback person creation
       await supabase.from('persons').delete().eq('id', person.id)
-      throw skillsError
+      throw tagsError
     }
   }
 

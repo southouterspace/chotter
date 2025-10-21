@@ -9,6 +9,7 @@ import { CustomersPage } from '@/pages/CustomersPage'
 import { TechniciansPage } from '@/pages/TechniciansPage'
 import { ServicesPage } from '@/pages/ServicesPage'
 import { RoutesPage } from '@/pages/RoutesPage'
+import { LiveTrackingPage } from '@/pages/LiveTrackingPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 
 export function AppRoutes() {
@@ -72,6 +73,16 @@ export function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <RoutesPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tracking"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <LiveTrackingPage />
             </Layout>
           </ProtectedRoute>
         }

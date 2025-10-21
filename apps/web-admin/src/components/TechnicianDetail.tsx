@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { TechnicianForm } from '@/components/TechnicianForm'
+import { TechnicianMetrics } from '@/components/TechnicianMetrics'
 import { useUpdateTechnician } from '@/hooks/useUpdateTechnician'
 import { useDeleteTechnician } from '@/hooks/useDeleteTechnician'
 import { useToast } from '@/hooks/useToast'
@@ -129,6 +130,9 @@ export function TechnicianDetail({ technician, onClose }: TechnicianDetailProps)
 
         <Separator />
 
+        {/* Performance Metrics */}
+        <TechnicianMetrics technicianId={technician.id} />
+
         {/* Contact Information */}
         <Card>
           <CardHeader>
@@ -157,7 +161,7 @@ export function TechnicianDetail({ technician, onClose }: TechnicianDetailProps)
         {/* Skills */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Skills & Certifications</CardTitle>
+            <CardTitle className="text-lg">Skills</CardTitle>
           </CardHeader>
           <CardContent>
             {technician.skills.length > 0 ? (
@@ -170,6 +174,64 @@ export function TechnicianDetail({ technician, onClose }: TechnicianDetailProps)
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">No skills assigned</p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Certifications */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Certifications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {technician.certifications && technician.certifications.length > 0 ? (
+              <div className="space-y-3">
+                {technician.certifications.map((cert, index) => {
+                  const isExpired = cert.expiryDate && new Date(cert.expiryDate) < new Date()
+                  const isExpiringSoon = cert.expiryDate &&
+                    !isExpired &&
+                    new Date(cert.expiryDate).getTime() - new Date().getTime() < 30 * 24 * 60 * 60 * 1000
+
+                  return (
+                    <div
+                      key={index}
+                      className={`rounded-lg border p-3 ${
+                        isExpired ? 'border-destructive bg-destructive/5' :
+                        isExpiringSoon ? 'border-yellow-500 bg-yellow-50' :
+                        ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="font-medium">{cert.name}</div>
+                          <div className="mt-1 space-y-1 text-xs text-muted-foreground">
+                            <div>Issued: {new Date(cert.issueDate).toLocaleDateString()}</div>
+                            {cert.expiryDate && (
+                              <div className={isExpired ? 'text-destructive font-medium' : isExpiringSoon ? 'text-yellow-700 font-medium' : ''}>
+                                Expires: {new Date(cert.expiryDate).toLocaleDateString()}
+                                {isExpired && ' (Expired)'}
+                                {isExpiringSoon && ' (Expires Soon)'}
+                              </div>
+                            )}
+                            {cert.certificationNumber && (
+                              <div>Number: {cert.certificationNumber}</div>
+                            )}
+                          </div>
+                        </div>
+                        {isExpired ? (
+                          <Badge variant="destructive" className="ml-2">Expired</Badge>
+                        ) : isExpiringSoon ? (
+                          <Badge variant="outline" className="ml-2 border-yellow-500 text-yellow-700">Expiring Soon</Badge>
+                        ) : (
+                          <Badge variant="outline" className="ml-2">Active</Badge>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No certifications added</p>
             )}
           </CardContent>
         </Card>

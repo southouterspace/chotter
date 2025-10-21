@@ -26,29 +26,49 @@ async function updateTechnician(data: UpdateTechnicianParams) {
 
   if (personError) throw personError
 
-  // 2. Update skills - delete all and recreate
-  const { error: deleteSkillsError } = await supabase
+  // 2. Update skills and certifications - delete all and recreate
+  const { error: deleteTagsError } = await supabase
     .from('technician_tags')
     .delete()
     .eq('person_id', data.id)
     .eq('business_id', BUSINESS_ID)
-    .eq('tag_type', 'skill')
 
-  if (deleteSkillsError) throw deleteSkillsError
+  if (deleteTagsError) throw deleteTagsError
 
+  const tags = []
+
+  // Add skills
   if (data.skills.length > 0) {
-    const skills = data.skills.map(skill => ({
+    tags.push(...data.skills.map(skill => ({
       business_id: BUSINESS_ID,
       person_id: data.id,
       tag_type: 'skill' as const,
       name: skill,
-    }))
+      tag_value: null,
+    })))
+  }
 
-    const { error: skillsError } = await supabase
+  // Add certifications
+  if (data.certifications && data.certifications.length > 0) {
+    tags.push(...data.certifications.map(cert => ({
+      business_id: BUSINESS_ID,
+      person_id: data.id,
+      tag_type: 'certification' as const,
+      name: cert.name,
+      tag_value: {
+        issue_date: cert.issueDate,
+        expiry_date: cert.expiryDate || null,
+        number: cert.certificationNumber || null,
+      },
+    })))
+  }
+
+  if (tags.length > 0) {
+    const { error: tagsError } = await supabase
       .from('technician_tags')
-      .insert(skills)
+      .insert(tags)
 
-    if (skillsError) throw skillsError
+    if (tagsError) throw tagsError
   }
 
   // 3. Update availability schedule

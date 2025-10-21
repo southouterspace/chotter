@@ -38,6 +38,13 @@ export const workScheduleSchema = z.object({
   }),
 })
 
+export const certificationSchema = z.object({
+  name: z.string().min(1, 'Certification name is required'),
+  issueDate: z.string().min(1, 'Issue date is required'),
+  expiryDate: z.string().optional(),
+  certificationNumber: z.string().optional(),
+})
+
 export const technicianFormSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
@@ -47,6 +54,7 @@ export const technicianFormSchema = z.object({
     .or(z.literal(''))
     .optional(),
   skills: z.array(z.string()).min(1, 'At least one skill is required'),
+  certifications: z.array(certificationSchema).optional().default([]),
   hourlyRate: z.number().min(0, 'Hourly rate must be positive').optional(),
   notes: z.string().optional(),
   isActive: z.boolean(),

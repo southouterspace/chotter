@@ -56,6 +56,7 @@ async function fetchTechnician(id: string): Promise<TechnicianData | null> {
     hourlyRate: tech.hourly_rate_cents ? tech.hourly_rate_cents / 100 : null,
     notes: tech.notes,
     skills: skillsResult.data?.map(s => s.name) || [],
+    certifications: [], // TODO: Add certifications support when table is created
     availability: (availabilityResult.data || []).map(a => ({
       id: a.id,
       dayOfWeek: a.day_of_week,

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Radar } from 'lucide-react'
 
 interface LayoutProps {
   children: ReactNode
@@ -47,6 +48,10 @@ export function Layout({ children }: LayoutProps) {
             </Link>
             <Link to="/routes" className="text-sm font-medium transition-colors hover:text-primary">
               Routes
+            </Link>
+            <Link to="/tracking" className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1">
+              <Radar className="h-4 w-4" />
+              Live Tracking
             </Link>
             <Link to="/customers" className="text-sm font-medium transition-colors hover:text-primary">
               Customers

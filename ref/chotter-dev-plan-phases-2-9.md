@@ -332,13 +332,13 @@ app.post('/api/geocode', async (c) => {
 
 **Acceptance Criteria:**
 
-- [ ] Customer list displays all customers
-- [ ] Search works (name, phone, email)
-- [ ] Can create new customer
-- [ ] Address geocodes to coordinates
-- [ ] Can edit customer
-- [ ] Can view customer appointment history
-- [ ] Pagination works
+- [x] Customer list displays all customers
+- [x] Search works (name, phone, email)
+- [x] Can create new customer
+- [x] Address geocodes to coordinates
+- [x] Can edit customer
+- [x] Can view customer appointment history
+- [x] Pagination works
 
 **Dependencies:** P2.4
 
@@ -510,11 +510,13 @@ const subscription = supabase
 
 **Acceptance Criteria:**
 
-- [ ] Map displays all active technicians
-- [ ] Real-time location updates work
-- [ ] Route polylines display correctly
-- [ ] Marker click shows tech info
-- [ ] Map performance acceptable with 10+ techs
+- [ ] **MISSING: Dedicated live tracking page/route** - TechnicianMap component exists but not integrated as standalone page
+- [x] Map component created (TechnicianMap.tsx) with technician markers
+- [x] Real-time location updates work (useTechnicianLocations.ts with Realtime subscription)
+- [x] Route polylines display correctly (RoutePolyline component in TechnicianMap.tsx)
+- [x] Marker click shows tech info (TechnicianInfoWindow component)
+- [ ] Map performance acceptable with 10+ techs (needs testing)
+- [ ] **NOTE:** RoutesPage is for route management (P2.9), not live tracking. LiveTrackingPage.tsx was created but not integrated into routing.
 
 **Dependencies:** P2.7
 
@@ -566,11 +568,12 @@ app.post('/api/routes/:routeId/optimize', async (c) => {
 
 **Acceptance Criteria:**
 
-- [ ] Route list shows all today's routes
-- [ ] Can reorder appointments via drag-and-drop
-- [ ] Manual reorder saves to database
-- [ ] "Optimize Route" triggers optimization
-- [ ] Shows distance/time savings
+- [x] Route list shows all today's routes (RouteList.tsx)
+- [x] Can reorder appointments via drag-and-drop (RouteReorderableList.tsx with @dnd-kit)
+- [x] Manual reorder saves to database (implemented in RouteReorderableList)
+- [ ] **MISSING: "Optimize Route" button** - useRouteOptimization.ts hook exists but not integrated in RouteDetail.tsx
+- [ ] **MISSING: API endpoint POST /api/routes/:routeId/optimize** - Backend optimization not implemented
+- [ ] **MISSING: Shows distance/time savings** - Metrics display not implemented
 
 **Dependencies:** P2.8
 
@@ -611,10 +614,10 @@ Build settings page for business information, operating hours, and user manageme
 
 **Acceptance Criteria:**
 
-- [ ] Business info editable and saves
-- [ ] Operating hours editor works
-- [ ] Can invite new admin users
-- [ ] Can view all users with roles
+- [x] Business info editable and saves (BusinessInfoForm.tsx implemented)
+- [x] Operating hours editor works (OperatingHoursEditor.tsx implemented)
+- [x] Can invite new admin users (UserManagement.tsx with invite dialog + useInviteAdmin hook)
+- [x] Can view all users with roles (UserManagement.tsx displays users with role badges)
 
 **Dependencies:** P2.9
 
